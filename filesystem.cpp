@@ -11,6 +11,16 @@ filesystem::~filesystem(){
 
 int filesystem::mkdir(string n)
 {
+    if(currentdir->getSubdirectories().empty()){
+                currentdir->makefolder(n);
+                return 1;
+        }
+        for(auto i:currentdir->getSubdirectories()){
+            if(i->getName()==n){
+                cout<<"Ilyen mappa mar van"<<endl;
+                return 0;
+            }
+        }
     currentdir->makefolder(n);
     return 1;
 }
