@@ -83,6 +83,10 @@ void filesystem::start(){
                }
            }
            else if(command=="cd.."){
+               if(currentdir==root){
+                   cout<<"Rootbol nem lehet cd..-zni"<<endl;
+               }
+               else
                    currentdir=currentdir->getParent();
            }
            else if (command=="mkdir")
