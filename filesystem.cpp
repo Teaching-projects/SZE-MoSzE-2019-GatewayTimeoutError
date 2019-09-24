@@ -98,5 +98,6 @@ void filesystem::start(){
                   this->mkdir(argument1);
                }
            }
+           else std::cout<<"Unknown command"<<std::endl;
        } while (command!="quit");
 }
