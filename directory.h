@@ -19,8 +19,12 @@ public:
     void print();
     void ls();
     void makefolder(string);
-    list<directory *> getSubdirectories() const;
+    list<directory *> getSubdirectories();
     directory *getParent() const;
+    bool hasDirs();
+    void rm(string);
+    void segedrmrf();
+    void rmrf(string);
 };
 
 #endif // DIRECTORY_H

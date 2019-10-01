@@ -59,6 +59,7 @@ int filesystem::cd(string to){
     return 0;
 }
 
+
 void filesystem::start(){
     string command;
     string fullcommand;
@@ -98,6 +99,22 @@ void filesystem::start(){
                   this->mkdir(argument1);
                }
            }
+           else if (command=="rm"){
+               if(argument1=="")
+                   cout<<"Adja meg a mappa nevet amit torolni akar"<<endl;
+               else {
+                   currentdir->rm(argument1);
+               }
+           }
+           else if(command=="rm-rf"){
+               if(argument1=="")
+                   cout<<"Adja meg a mappa nevet amit torolni akar"<<endl;
+               else {
+                   currentdir->rmrf(argument1);
+               }
+           }
            else std::cout<<"Unknown command"<<std::endl;
-       } while (command!="quit");
+    } while (command!="quit");
 }
+
+
