@@ -6,7 +6,7 @@ jobs:
     executor: machine
     steps:
       - checkout
-      - run: 'g++ -std=c++11 *.cpp *.h'
+      - run: 'make'
 workflows:
   version: 2
   workflow:
