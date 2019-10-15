@@ -7,15 +7,18 @@ string directory::getName() const
 
 void directory::print()
 {
-    cout<<this->getName()<<"/";
+    cout<<"   "<<this->getName();
 }
 
 void directory::ls()
 {
   this->print();
-    /*for(auto& i:subdirectories){
-        i->print();
-    }*/
+}
+
+void directory::lsfiles(){
+    for(auto i:files){
+          cout<<"   "<<i->getFilename()<<endl;
+    }
 }
 
 void directory::makefolder(string n)
@@ -85,6 +88,16 @@ void directory::rmrf(string todelete)
     }
 
 }
+
+void directory::touch(string name)
+{
+    files.push_back(new file(name));
+}
+list<file *> directory::getFiles() const
+{
+    return files;
+}
+
 directory::directory(string n, directory*parent)
 {
     this->name=n;

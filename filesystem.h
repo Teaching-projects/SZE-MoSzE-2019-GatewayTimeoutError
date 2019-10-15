@@ -9,10 +9,12 @@ class filesystem
 private:
     list <directory*> directories;
     directory* root;
+    list<string> path;
 public:
     filesystem();
     ~filesystem();
     int mkdir(string);
+    int touch(string);
     void ls();
     int cd(string);
     directory* currentdir;

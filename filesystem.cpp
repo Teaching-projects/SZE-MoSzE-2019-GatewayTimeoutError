@@ -24,24 +24,41 @@ int filesystem::mkdir(string n)
     currentdir->makefolder(n);
     return 1;
 }
-
+int filesystem::touch(string filename){
+    for(auto i:currentdir->getSubdirectories()){
+        if(i->getName()==filename){
+            return 0;
+        }
+    }
+    for(auto i:currentdir->getFiles()){
+        if(i->getFilename()==filename){
+            return 0;
+        }
+    }
+    currentdir->touch(filename);
+    return 1;
+}
 void filesystem::ls(){
     directory* tmp;
     tmp=currentdir;
-    list<string> path;
+    path.push_front(currentdir->getName());
     while(tmp->getParent()!=nullptr){
         path.push_front(tmp->getParent()->getName());
         tmp=tmp->getParent();
     }
+    //currentdir->print();
+    //cout<<"/"<<endl;
+    for(auto i:path){
+        cout<<i;
+        cout<<"/";
+    }
+    cout<<endl;
     for(auto i:currentdir->getSubdirectories()){
-        for(auto i:path){
-            cout<<i;
-            cout<<"/";
-        }
-        currentdir->print();
         i->ls();
         cout<<endl;
     }
+    currentdir->lsfiles();
+    path.clear();
 }
 //cd mukodik
 int filesystem::cd(string to){
@@ -49,12 +66,17 @@ int filesystem::cd(string to){
         currentdir=currentdir->getParent();
         return 1;
     }
+    int tmp=0;
     for(auto& i:currentdir->getSubdirectories()){
         //i->print();
         if(i->getName()==to){
+        tmp+=1;
         currentdir=i;
         return 1;
         }
+    }
+    if(tmp==0){
+        cout<<"Az adott mappa nem letezik"<<endl;
     }
     return 0;
 }
@@ -113,8 +135,14 @@ void filesystem::start(){
                    currentdir->rmrf(argument1);
                }
            }
+           else if(command=="touch"){
+               if(argument1=="")
+                   cout<<"Adja meg a fajl nevet amit letre akar hozni"<<endl;
+               else {
+                   this->touch(argument1);
+               }
+           }
            else std::cout<<"Unknown command"<<std::endl;
     } while (command!="quit");
 }
-
 
