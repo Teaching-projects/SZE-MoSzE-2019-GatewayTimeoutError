@@ -1,19 +1,16 @@
 #ifndef FILE_H
 #define FILE_H
+#include "ancestor.h"
 
-#include <iostream>
-#include <string>
-
-using namespace std;
-
-class file
+class file:public ancestor
 {
 private:
     string content;
-    string filename;
 public:
-    file(string);
-    string getFilename() const;
+    file(string,directory*);
+    ~file() override;
+    string getname() override;
+    directory* getparent() override;
 };
 
 #endif // FILE_H

@@ -1,16 +1,13 @@
 #ifndef FILESYSTEM_H
 #define FILESYSTEM_H
-
 #include "directory.h"
-#include <list>
-#include <vector>
+#include <sstream>
 
 class filesystem
 {
 private:
-    list <directory*> directories;
     directory* root;
-    list<string> path;
+    directory* currentdir;
 public:
     filesystem();
     ~filesystem();
@@ -18,10 +15,9 @@ public:
     int touch(string);
     void ls();
     int cd(string);
-    directory* currentdir;
     void start();
+    int absoulutepathcd(string);
     vector<string> split(const string&, const char&);
-    int absoulutepath(string);
 };
 
 #endif // FILESYSTEM_H

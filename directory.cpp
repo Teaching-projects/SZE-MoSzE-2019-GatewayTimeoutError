@@ -1,39 +1,40 @@
 #include "directory.h"
 
-string directory::getName() const
+
+
+directory::directory(string name, directory *parent):ancestor(name,parent)
 {
-    return name;
+
 }
 
-void directory::print()
+directory::~directory()
 {
-    cout<<"   "<<this->getName();
-}
-
-void directory::ls()
-{
-  this->print();
-}
-
-void directory::lsfiles(){
-    for(auto i:files){
-          cout<<"   "<<i->getFilename()<<endl;
+    //delete parent;
+    for(auto i:subdirectories){
+        delete i;
     }
 }
 
-void directory::makefolder(string n)
-{
-    subdirectories.push_back(new directory(n,this));
-}
-
-list<directory *> directory::getSubdirectories()
+list<ancestor *> directory::getSubdirectories() const
 {
     return subdirectories;
 }
 
-directory *directory::getParent() const
+directory *directory::getparent()
 {
-    return parent;
+    return this->parent;
+}
+
+
+string directory::getname()
+{
+    return this->name;
+}
+
+void directory::ls(){
+    for(ancestor* i:subdirectories){
+        cout<<i->getname()<<endl;
+    }
 }
 
 bool directory::hasDirs()
@@ -44,13 +45,24 @@ bool directory::hasDirs()
     return true;
 }
 
+void directory::makefolder(string n)
+{
+    subdirectories.push_back(new directory(n,this));
+}
+
+void directory::touch(string name)
+{
+    subdirectories.push_back(new file(name,this));
+}
+
 void directory::rm(string todelete)
 {
     for(auto it=subdirectories.begin();it!=subdirectories.end();){
-        if((*it)->getName()==todelete &&!(*it)->hasDirs()){
+        directory* temp=dynamic_cast<directory*>(*it);
+        if(temp->getname()==todelete &&!temp->hasDirs()){
             it=this->subdirectories.erase(it);
         }
-        else if((*it)->getName()==todelete &&(*it)->hasDirs()){
+        else if(temp->getname()==todelete &&temp->hasDirs()){
             cout<<"Az adott mappa nem ures"<<endl;
             it++;
         }
@@ -61,52 +73,41 @@ void directory::rm(string todelete)
 
 }
 void directory::segedrmrf(){
-    for(auto it=subdirectories.begin();it!=subdirectories.end();){
-        if((*it)->hasDirs()){
-            (*it)->segedrmrf();
-        }
-        else if(!(*it)->hasDirs()){
-            it=this->subdirectories.erase(it);
+    for(auto it=subdirectories.begin();it!=subdirectories.end();)
+    {
+        directory* temp=dynamic_cast<directory*>(*it);
+        if(temp!=nullptr){
+            if(temp->hasDirs()){
+                temp->segedrmrf();
+            }
+            else if(!temp->hasDirs()){
+                it=this->subdirectories.erase(it);
+            }
+            else{
+                it++;
+            }
         }
         else{
-            it++;
+            it=this->subdirectories.erase(it);
         }
     }
 }
 void directory::rmrf(string todelete)
 {
     for(auto it=subdirectories.begin();it!=subdirectories.end();){
-        if((*it)->getName()==todelete &&!(*it)->hasDirs()){
-            it=this->subdirectories.erase(it);
-        }
-        else if((*it)->getName()==todelete &&(*it)->hasDirs()){
-            (*it)->segedrmrf();
-        }
-        else{
-            it++;
+        directory* temp=dynamic_cast<directory*>(*it);
+        if(temp!=nullptr){
+            if(temp->getname()==todelete &&!temp->hasDirs()){
+                it=this->subdirectories.erase(it);
+            }
+            else if(temp->getname()==todelete &&temp->hasDirs()){
+                temp->segedrmrf();
+            }
+            else{
+                it++;
+            }
         }
     }
 
 }
 
-void directory::touch(string name)
-{
-    files.push_back(new file(name));
-}
-list<file *> directory::getFiles() const
-{
-    return files;
-}
-
-directory::directory(string n, directory*parent)
-{
-    this->name=n;
-    this->parent=parent;
-}
-
-directory::~directory()
-{
-        for(auto& i : subdirectories){
-            delete i;
-        }
-}
