@@ -1,12 +1,19 @@
 #include "file.h"
 
-string file::getFilename() const
+file::file(string name, directory* parent):ancestor(name,parent)
 {
-    return filename;
+
 }
 
-file::file(string filename)
+string file::getname()
 {
-    this->filename=filename;
-    this->content="";
+    return this->name;
+}
+
+directory *file::getparent()
+{
+    return this->parent;
+}
+
+file::~file(){
 }

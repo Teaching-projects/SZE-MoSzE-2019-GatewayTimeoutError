@@ -1,37 +1,29 @@
 #include "filesystem.h"
-#include <sstream>
 filesystem::filesystem()
 {
     root=new directory("root",nullptr);
     currentdir=root;
 }
-filesystem::~filesystem(){
+
+filesystem::~filesystem()
+{
     delete root;
 }
-
 int filesystem::mkdir(string n)
 {
-    if(currentdir->getSubdirectories().empty()){
-                currentdir->makefolder(n);
-                return 1;
-        }
-        for(auto i:currentdir->getSubdirectories()){
-            if(i->getName()==n){
-                cout<<"Ilyen mappa mar van"<<endl;
+    for(auto i:currentdir->getSubdirectories()){
+            if(i->getname()==n){
+                cout<<"Ez a nev mar foglalt"<<endl;
                 return 0;
             }
-        }
+    }
     currentdir->makefolder(n);
     return 1;
 }
 int filesystem::touch(string filename){
     for(auto i:currentdir->getSubdirectories()){
-        if(i->getName()==filename){
-            return 0;
-        }
-    }
-    for(auto i:currentdir->getFiles()){
-        if(i->getFilename()==filename){
+        if(i->getname()==filename){
+            cout<<"Ez a nev mar foglalt"<<endl;
             return 0;
         }
     }
@@ -41,38 +33,41 @@ int filesystem::touch(string filename){
 void filesystem::ls(){
     directory* tmp;
     tmp=currentdir;
-    path.push_front(currentdir->getName());
-    while(tmp->getParent()!=nullptr){
-        path.push_front(tmp->getParent()->getName());
-        tmp=tmp->getParent();
+    list<string> path;
+    path.push_front(currentdir->getname());
+    while(tmp->getparent()!=nullptr){
+        path.push_front(tmp->getparent()->getname());
+        tmp=tmp->getparent();
     }
-    //currentdir->print();
-    //cout<<"/"<<endl;
     for(auto i:path){
         cout<<i;
         cout<<"/";
     }
     cout<<endl;
     for(auto i:currentdir->getSubdirectories()){
-        i->ls();
+        cout<<"   "<<i->getname();
         cout<<endl;
     }
-    currentdir->lsfiles();
-    path.clear();
 }
-//cd mukodik
+
 int filesystem::cd(string to){
     if(to==".."){
-        currentdir=currentdir->getParent();
+        currentdir=currentdir->getparent();
         return 1;
     }
     int tmp=0;
     for(auto& i:currentdir->getSubdirectories()){
-        //i->print();
-        if(i->getName()==to){
+        if(i->getname()==to){
         tmp+=1;
-        currentdir=i;
-        return 1;
+        directory* temp=dynamic_cast<directory*>(i);
+        if(temp!=nullptr){
+            currentdir=temp;
+            return 1;
+        }
+        else{
+            cout<<"File-ba nem lehet cd-zni"<<endl;
+            return 0;
+        }
         }
     }
     if(tmp==0){
@@ -80,7 +75,6 @@ int filesystem::cd(string to){
     }
     return 0;
 }
-
 
 void filesystem::start(){
     string command;
@@ -110,7 +104,7 @@ void filesystem::start(){
                    cout<<"Rootbol nem lehet cd..-zni"<<endl;
                }
                else
-                   currentdir=currentdir->getParent();
+                   currentdir=currentdir->getparent();
            }
            else if (command=="mkdir")
            {
@@ -142,7 +136,9 @@ void filesystem::start(){
                    this->touch(argument1);
                }
            }
+           else if(command=="exit"){
+               break;
+           }
            else std::cout<<"Unknown command"<<std::endl;
-    } while (command!="quit");
+    } while (command!="exit");
 }
-
