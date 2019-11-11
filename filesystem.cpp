@@ -1,5 +1,5 @@
 #include "filesystem.h"
-
+#include <stdlib.h>
 filesystem::filesystem()
 {
     root=new directory("root",nullptr);
@@ -61,13 +61,15 @@ int filesystem::cd(string to){
         //i->print();
         if(i->getname()==to){
         tmp+=1;
-        currentdir=dynamic_cast<directory*>(i);
-        if(currentdir!=nullptr)
+        directory* temp=dynamic_cast<directory*>(i);
+        if(temp!=nullptr){
+            currentdir=temp;
             return 1;
         }
         else{
             cout<<"File-ba nem lehet cd-zni"<<endl;
             return 0;
+        }
         }
     }
     if(tmp==0){
@@ -92,7 +94,7 @@ vector<string> filesystem::split(const string& str, const char& delim)
     return tokens;
 }
 
-int filesystem::absoulutepathcd(string path){
+int filesystem::absolutepathcd(string path){
     currentdir=root;
     vector<string>route=this->split(path,'/');
     unsigned int flag=1;
@@ -112,6 +114,101 @@ int filesystem::absoulutepathcd(string path){
         }
     }
     if(flag==route.size()){
+        return 1;
+    }
+    else{
+        cout<<"Nincs ilyen eleresi utvonal"<<endl;
+        return 0;
+    }
+}
+
+int filesystem::absolutepathmkdir(string path){
+    currentdir=root;
+    vector<string>route=this->split(path,'/');
+    unsigned int n=route.size();
+    string tocreate=route[n-1];
+    unsigned int flag=1;
+    if(route[0]!="root"){
+        cout<<"Nincs ilyen eleresi utvonal"<<endl;
+        return 0;
+    }
+    for(unsigned int i=1;i<route.size()-1;i++){
+        for(auto j:currentdir->getSubdirectories()){
+            directory* temp=dynamic_cast<directory*>(j);
+            if(temp!=nullptr){
+                if(temp->getname()==route[i]){
+                    currentdir=temp;
+                    flag++;
+                }
+            }
+        }
+    }
+    if(flag==route.size()-1){
+        currentdir->makefolder(tocreate);
+        return 1;
+    }
+    else{
+        cout<<"Nincs ilyen eleresi utvonal"<<endl;
+        return 0;
+    }
+}
+
+int filesystem::absolutepathrm(string path)
+{
+    currentdir=root;
+    vector<string>route=this->split(path,'/');
+    int n=route.size();
+    string todelete=route[n-1];
+    unsigned int flag=1;
+    if(route[0]!="root"){
+        cout<<"Nincs ilyen eleresi utvonal"<<endl;
+        return 0;
+    }
+    for(unsigned int i=1;i<route.size()-1;i++){
+        for(auto j:currentdir->getSubdirectories()){
+            directory* temp=dynamic_cast<directory*>(j);
+            if(temp!=nullptr){
+                if(temp->getname()==route[i]){
+                    currentdir=temp;
+                    flag++;
+                }
+            }
+        }
+    }
+    if(flag==route.size()-1){
+        currentdir->rm(todelete);
+        return 1;
+    }
+    else{
+        cout<<"Nincs ilyen eleresi utvonal"<<endl;
+        return 0;
+    }
+}
+
+int filesystem::absolutepathrmrf(string path)
+{
+    currentdir=root;
+    vector<string>route=this->split(path,'/');
+    int n=route.size();
+    string todelete=route[n-1];
+    unsigned int flag=1;
+    if(route[0]!="root"){
+        cout<<"Nincs ilyen eleresi utvonal"<<endl;
+        return 0;
+    }
+    for(unsigned int i=1;i<route.size()-1;i++){
+        for(auto j:currentdir->getSubdirectories()){
+            directory* temp=dynamic_cast<directory*>(j);
+            if(temp!=nullptr){
+                if(temp->getname()==route[i]){
+                    currentdir=temp;
+                    flag++;
+                }
+            }
+        }
+    }
+    if(flag==route.size()-1){
+        currentdir->rmrf(todelete);
         return 1;
     }
     else{
@@ -141,7 +238,7 @@ void filesystem::start(){
            {
                if(argument1=="") cout<<"Adjon meg egy mappanevet"<<endl;
                else if(argument1.find("/")!=string::npos){
-                   this->absoulutepathcd(argument1);
+                   this->absolutepathcd(argument1);
                }
                else{
                    this->cd(argument1);
@@ -158,6 +255,9 @@ void filesystem::start(){
            {
                if(argument1=="")
                    cout<<"A mappat el kell nevezni"<<endl;
+               else if(argument1.find("/")!=string::npos){
+                   this->absolutepathmkdir(argument1);
+               }
                else
                {
                   this->mkdir(argument1);
@@ -166,6 +266,9 @@ void filesystem::start(){
            else if (command=="rm"){
                if(argument1=="")
                    cout<<"Adja meg a mappa nevet amit torolni akar"<<endl;
+               else if(argument1.find("/")!=string::npos){
+                   this->absolutepathrm(argument1);
+               }
                else {
                    currentdir->rm(argument1);
                }
@@ -173,6 +276,9 @@ void filesystem::start(){
            else if(command=="rm-rf"){
                if(argument1=="")
                    cout<<"Adja meg a mappa nevet amit torolni akar"<<endl;
+               else if(argument1.find("/")!=string::npos){
+                   this->absolutepathrmrf(argument1);
+               }
                else {
                    currentdir->rmrf(argument1);
                }

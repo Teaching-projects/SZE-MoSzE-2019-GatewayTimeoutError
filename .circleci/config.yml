@@ -1,14 +1,14 @@
-orbs:
-  win: circleci/windows@1.0.0
-
+version: 2
 jobs:
-  build:
-    executor: machine
+  build_and_test:
+    machine:
+      image: ubuntu-1604:201903-01
     steps:
       - checkout
       - run: 'make'
+      - run: ./projekt < test.txt > output.txt      
 workflows:
   version: 2
-  workflow:
+  tasks:
     jobs:
-    - build
+      - build_and_test

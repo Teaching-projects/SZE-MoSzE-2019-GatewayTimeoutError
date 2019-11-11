@@ -8,16 +8,19 @@ class filesystem
 private:
     directory* root;
     directory* currentdir;
-public:
-    filesystem();
-    ~filesystem();
     int mkdir(string);
     int touch(string);
     void ls();
     int cd(string);
-    void start();
-    int absoulutepathcd(string);
+    int absolutepathcd(string);
+    int absolutepathrm(string);
+    int absolutepathrmrf(string);
+    int absolutepathmkdir(string);
     vector<string> split(const string&, const char&);
+public:
+    filesystem();
+    ~filesystem();
+    void start();
 };
 
 #endif // FILESYSTEM_H

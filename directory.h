@@ -9,6 +9,7 @@ class directory : public ancestor
 {
 private:
     list<ancestor*> subdirectories;
+    void segedrmrf();
 public:
     directory(string name,directory*parent);
     ~directory() override;
@@ -20,8 +21,6 @@ public:
     void makefolder(string);
     void touch(string);
     void rm(string);
-    void segedrmrf();
     void rmrf(string);
-
 };
 #endif // DIRECTORY_H

@@ -1,0 +1,8 @@
+ls
+mkdir mappa
+mkdir mappa2
+cd mappa
+touch file
+cd..
+ls
+exit

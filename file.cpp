@@ -15,6 +15,6 @@ directory *file::getparent()
     return this->parent;
 }
 
+
 file::~file(){
-    //delete parent;
 }
