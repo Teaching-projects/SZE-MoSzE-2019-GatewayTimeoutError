@@ -1,21 +1,24 @@
 #ifndef FILESYSTEM_H
 #define FILESYSTEM_H
-
 #include "directory.h"
-#include <list>
+#include <sstream>
+#include <fstream>
 
 class filesystem
 {
 private:
-    list <directory*> directories;
     directory* root;
+    directory* currentdir;
+    int mkdir(string);
+    int touch(string);
+    void ls();
+    int cd(string);
+    vector<string> split(const string&, const char&);
+    void save(string);
+    void load(string);
 public:
     filesystem();
     ~filesystem();
-    int mkdir(string);
-    void ls();
-    int cd(string);
-    directory* currentdir;
     void start();
 };
 
