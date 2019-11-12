@@ -1,64 +1,99 @@
 #include "filesystem.h"
-#include <sstream>
+
 filesystem::filesystem()
 {
     root=new directory("root",nullptr);
     currentdir=root;
 }
-filesystem::~filesystem(){
+
+filesystem::~filesystem()
+{
     delete root;
 }
-
 int filesystem::mkdir(string n)
 {
-    if(currentdir->getSubdirectories().empty()){
-                currentdir->makefolder(n);
-                return 1;
-        }
-        for(auto i:currentdir->getSubdirectories()){
-            if(i->getName()==n){
-                cout<<"Ilyen mappa mar van"<<endl;
+    for(auto i:currentdir->getSubdirectories()){
+            if(i->getname()==n){
+                cout<<"Ez a nev mar foglalt"<<endl;
                 return 0;
             }
-        }
+    }
     currentdir->makefolder(n);
     return 1;
 }
-
+int filesystem::touch(string filename){
+    for(auto i:currentdir->getSubdirectories()){
+        if(i->getname()==filename){
+            cout<<"Ez a nev mar foglalt"<<endl;
+            return 0;
+        }
+    }
+    currentdir->touch(filename);
+    return 1;
+}
 void filesystem::ls(){
     directory* tmp;
     tmp=currentdir;
     list<string> path;
-    while(tmp->getParent()!=nullptr){
-        path.push_front(tmp->getParent()->getName());
-        tmp=tmp->getParent();
+    path.push_front(currentdir->getname());
+    while(tmp->getparent()!=nullptr){
+        path.push_front(tmp->getparent()->getname());
+        tmp=tmp->getparent();
     }
+    for(auto i:path){
+        cout<<i;
+        cout<<"/";
+    }
+    cout<<endl;
     for(auto i:currentdir->getSubdirectories()){
-        for(auto i:path){
-            cout<<i;
-            cout<<"/";
+        cout<<"   "<<i->getname();
+        if(i->isDir()==false){
+            file* temp=dynamic_cast<file*>(i);
+            cout<<" ("<<temp->getContent()<<")";
         }
-        currentdir->print();
-        i->ls();
         cout<<endl;
     }
 }
-//cd mukodik
+
 int filesystem::cd(string to){
     if(to==".."){
-        currentdir=currentdir->getParent();
+        currentdir=currentdir->getparent();
         return 1;
     }
+    int tmp=0;
     for(auto& i:currentdir->getSubdirectories()){
         //i->print();
-        if(i->getName()==to){
-        currentdir=i;
-        return 1;
+        if(i->getname()==to){
+        tmp+=1;
+        directory* temp=dynamic_cast<directory*>(i);
+        if(temp!=nullptr){
+            currentdir=temp;
+            return 1;
         }
+        else{
+            cout<<"File-ba nem lehet cd-zni"<<endl;
+            return 0;
+        }
+        }
+    }
+    if(tmp==0){
+        cout<<"Az adott mappa nem letezik"<<endl;
     }
     return 0;
 }
 
+int filesystem::echo(string content,string fname){
+    for(auto i:currentdir->getSubdirectories()){
+            if(i->getname()==fname){
+                file* tempfile=dynamic_cast<file*>(i);
+                tempfile->setContent(content);
+                i=tempfile;
+                return 1;
+            }
+    }
+    currentdir->echo(content,fname);
+    return 1;
+}
 
 void filesystem::start(){
     string command;
@@ -88,7 +123,7 @@ void filesystem::start(){
                    cout<<"Rootbol nem lehet cd..-zni"<<endl;
                }
                else
-                   currentdir=currentdir->getParent();
+                   currentdir=currentdir->getparent();
            }
            else if (command=="mkdir")
            {
@@ -113,8 +148,46 @@ void filesystem::start(){
                    currentdir->rmrf(argument1);
                }
            }
+           else if(command=="touch"){
+               if(argument1=="")
+                   cout<<"Adja meg a fajl nevet amit letre akar hozni"<<endl;
+               else {
+                   this->touch(argument1);
+               }
+           }
+           else if(command=="echo"){
+               string content="";
+               string arg="";
+               int pos=fullcommand.find('"');
+                if(pos!=std::string::npos && pos==5){
+                    int pos2=fullcommand.find('"',pos+1);
+                    if(pos2!=std::string::npos){
+                        content=fullcommand.substr(pos+1,pos2-pos-1);
+                        arg=fullcommand.substr(pos2+1);
+                        istringstream args(arg);
+                        char t;
+                        string filenev;
+                        args>>t;
+                        args>>filenev;
+                        if(t!='>' || filenev==""){
+                            cout<<"Lemaradt valami"<<endl;
+                        }
+                        else if(t=='>' && filenev!=""){
+                            echo(content,filenev);
+                        }
+                        }
+                else{
+                    cout<<"Unknown command"<<endl;
+                }
+               }
+               else{
+                   cout<<"Unknown command"<<endl;
+               }
+           }
+           else if(command=="exit"){
+               cout<<"VISZLAT"<<endl;
+               break;
+           }
            else std::cout<<"Unknown command"<<std::endl;
-    } while (command!="quit");
+    } while (command!="exit");
 }
-
-
