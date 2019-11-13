@@ -2,21 +2,22 @@
 #define ANCESTOR_H
 #include <string>
 #include <iostream>
+#include <list>
+#include <vector>
+#include <stdlib.h>
 using namespace std;
-class directory;
 
 
 class ancestor
 {
 protected:
     string name;
-    directory* parent;
+    ancestor* parent;
 public:
-    ancestor(string,directory*);
+    ancestor(string,ancestor*);
     virtual ~ancestor()=0;
     virtual string getname()=0;
-    virtual directory* getparent()=0;
-    virtual bool isDir() const=0;
+    virtual ancestor* getparent()=0;
 };
 
 #endif // ANCESTOR_H

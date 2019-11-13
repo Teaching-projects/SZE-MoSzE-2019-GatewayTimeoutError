@@ -7,11 +7,10 @@ class file:public ancestor
 private:
     string content;
 public:
-    file(string,directory*);
+    file(string,ancestor*);
     ~file() override;
     string getname() override;
-    directory* getparent() override;
-    bool isDir() const;
+    ancestor* getparent() override;
 };
 
 #endif // FILE_H

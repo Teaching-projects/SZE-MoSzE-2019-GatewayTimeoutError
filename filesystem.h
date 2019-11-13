@@ -14,12 +14,16 @@ private:
     void ls();
     int cd(string);
     vector<string> split(const string&, const char&);
-    void save(string);
-    void load(string);
+
 public:
     filesystem();
     ~filesystem();
     void start();
+    void save(string);
+    void load(string);
+    friend std::ostream& operator << (std::ostream& os, directory* d);
+    void Print(std::ostream& os,directory* d) const;
+    directory *getRoot() const;
 };
 
 #endif // FILESYSTEM_H

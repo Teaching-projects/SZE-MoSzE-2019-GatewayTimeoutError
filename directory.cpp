@@ -9,26 +9,21 @@ directory::directory(string name, directory *parent):ancestor(name,parent)
 
 directory::~directory()
 {
-    for(auto i:subdirectories){
+    for(auto i:FileSystemObjects){
         delete i;
     }
 }
 
-list<ancestor *> directory::getSubdirectories() const
+list<ancestor *> directory::getFileSystemObjects() const
 {
-    return subdirectories;
+    return FileSystemObjects;
 }
 
 directory *directory::getparent()
 {
-    return this->parent;
+    directory* temp=dynamic_cast<directory*>(this->parent);
+    return temp;
 }
-
-bool directory::isDir() const
-{
-    return true;
-}
-
 
 string directory::getname()
 {
@@ -36,14 +31,14 @@ string directory::getname()
 }
 
 void directory::ls(){
-    for(ancestor* i:subdirectories){
+    for(ancestor* i:FileSystemObjects){
         cout<<i->getname()<<endl;
     }
 }
 
 bool directory::hasDirs()
 {
-    if(this->getSubdirectories().empty()){
+    if(this->getFileSystemObjects().empty()){
         return false;
     }
     return true;
@@ -51,112 +46,89 @@ bool directory::hasDirs()
 
 void directory::makefolder(string n)
 {
-    subdirectories.push_back(new directory(n,this));
+    FileSystemObjects.push_back(new directory(n,this));
 }
 
 void directory::touch(string name)
 {
-    subdirectories.push_back(new file(name,this));
+    FileSystemObjects.push_back(new file(name,this));
 }
 
 void directory::rm(string todelete)
 {
-    for(auto it=subdirectories.begin();it!=subdirectories.end();){
-        directory* temp=dynamic_cast<directory*>(*it);
-        if(temp->getname()==todelete &&!temp->hasDirs()){
-            it=this->subdirectories.erase(it);
+    std::list<ancestor*>::iterator i = FileSystemObjects.begin();
+    while (i != FileSystemObjects.end())
+    {
+        if((*i)->getname()==todelete){
+            directory* temp=dynamic_cast<directory*>(*i);
+            if(temp!=nullptr){
+            //ha üres a mappa kitöröljük és továbbiterálunk
+                if(!temp->hasDirs())
+                    FileSystemObjects.erase(i++);
+                //ha nem üres meghívjuk a segedrmrf-et ami rekurzívan bejárja az adott mappát
+                else{
+                    cout<<"Az adott mappa nem ures"<<endl;
+                    ++i;
+                }
+            }
+            else{
+                FileSystemObjects.erase(i++);
+            }
         }
-        else if(temp->getname()==todelete &&temp->hasDirs()){
-            cout<<"Az adott mappa nem ures"<<endl;
-            it++;
-        }
-        else{
-            it++;
+        else
+        {
+            ++i;
         }
     }
 
 }
 void directory::segedrmrf(){
-    for(auto it=subdirectories.begin();it!=subdirectories.end();)
+    for(auto it=FileSystemObjects.begin();it!=FileSystemObjects.end();)
     {
         directory* temp=dynamic_cast<directory*>(*it);
         if(temp!=nullptr){
+            //ha a mappa nem üres meghívjuk a segedrmrf-et az adott mappára
             if(temp->hasDirs()){
                 temp->segedrmrf();
             }
+            //ha üres a mappa töröljük
             else if(!temp->hasDirs()){
-                it=this->subdirectories.erase(it);
+                it=this->FileSystemObjects.erase(it);
             }
             else{
                 it++;
             }
         }
+        //ha fájl akkor töröljük
         else{
-            it=this->subdirectories.erase(it);
+            it=this->FileSystemObjects.erase(it);
         }
     }
 }
 void directory::rmrf(string todelete)
 {
-    for(auto it=subdirectories.begin();it!=subdirectories.end();){
-        directory* temp=dynamic_cast<directory*>(*it);
-        if(temp!=nullptr){
-            if(temp->getname()==todelete &&!temp->hasDirs()){
-                it=this->subdirectories.erase(it);
-            }
-            else if(temp->getname()==todelete &&temp->hasDirs()){
-                temp->segedrmrf();
+    std::list<ancestor*>::iterator i = FileSystemObjects.begin();
+    while (i != FileSystemObjects.end())
+    {
+        if((*i)->getname()==todelete){
+            directory* temp=dynamic_cast<directory*>(*i);
+            if(temp!=nullptr){
+            //ha üres a mappa kitöröljük és továbbiterálunk
+                if(!temp->hasDirs())
+                    FileSystemObjects.erase(i++);
+                //ha nem üres meghívjuk a segedrmrf-et ami rekurzívan bejárja az adott mappát
+                else{
+                    temp->segedrmrf();
+                }
             }
             else{
-                it++;
+                FileSystemObjects.erase(i++);
             }
+        }
+        else
+        {
+            ++i;
         }
     }
-
-}
-void directory::Print(std::ostream& os,
-                 directory *d) const{
-    list<string> path;
-    if(d->getparent()==nullptr){
-        os<<d->getname()<<endl;
-    }
-    for(auto& i:d->getSubdirectories()){
-        path.clear();
-        directory* temp=dynamic_cast<directory*>(i);
-        if(i->isDir() && !temp->hasDirs()){
-            directory* parent = i->getparent();
-            path.push_front(i->getparent()->getname());
-            while(parent->getparent()){
-                path.push_front(parent->getparent()->getname());
-                parent=parent->getparent();
-            }
-            os<<"d ";
-            for(auto i:path){
-                os<<i<<"/";
-            }
-            os<<i->getname()<<endl;
-        }
-        else if(i->isDir() && temp->hasDirs()){
-            this->Print(os, temp);
-        }
-        else if(i->isDir()==false){
-            directory* temp2=i->getparent();
-            path.push_front(temp2->getname());
-            while(temp2->getparent()){
-                path.push_front(temp2->getparent()->getname());
-                temp2=temp2->getparent();
-            }
-            os<<"f ";
-            for(auto i:path){
-                os<<i<<"/";
-            }
-            os<<i->getname()<<endl;
-        }
-    }
-}
-
-std::ostream& operator << (std::ostream& os, directory* d) {
-  d->Print(os,d);
-  return os;
 }
 

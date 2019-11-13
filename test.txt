@@ -1,8 +1,16 @@
-ls
+saveto.txt
+saveto.txt
 mkdir mappa
 mkdir mappa2
+mkdir mappa3
 cd mappa
 touch file
+mkdir mappa2
 cd..
+rm-rf mappa
+cd mappa2
+mkdir mappa22
+cd..
+cd root/mappa2/mappa22
 ls
 exit
