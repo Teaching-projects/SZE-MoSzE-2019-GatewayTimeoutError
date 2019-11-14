@@ -1,16 +1,18 @@
-saveto.txt
-saveto.txt
-mkdir mappa
-mkdir mappa2
-mkdir mappa3
-cd mappa
+save.txt
+save.txt
+mkdir asd
+mkdir asdasd
 touch file
-mkdir mappa2
-cd..
-rm-rf mappa
-cd mappa2
-mkdir mappa22
-cd..
-cd root/mappa2/mappa22
+cd asd
+mkdir asd1
+mkdir asd2
+ls
+cd asd1
+touch file1
+mkdir asd3
+touch file3
+cd ..
+cd ..
+rm-rf asd
 ls
 exit

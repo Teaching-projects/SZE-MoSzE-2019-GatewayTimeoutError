@@ -1,10 +1,5 @@
 #include "filesystem.h"
 
-#ifdef _WIN32
-#define CLEAR "cls"
-#else
-#define CLEAR "clear"
-#endif
 
 
 filesystem::filesystem()
@@ -33,6 +28,18 @@ int filesystem::mkdir(string n)
     currentdir->makefolder(n);
     return 1;
 }
+
+int filesystem::mkdirwoerrormessage(string n)
+{
+    for(auto i:currentdir->getFileSystemObjects()){
+            if(i->getname()==n){
+                return 0;
+            }
+    }
+    currentdir->makefolder(n);
+    return 1;
+}
+
 int filesystem::touch(string filename){
     for(auto i:currentdir->getFileSystemObjects()){
         if(i->getname()==filename){
@@ -85,6 +92,28 @@ int filesystem::cd(string to){
     }
     if(tmp==0){
         cout<<"Az adott mappa nem letezik"<<endl;
+    }
+    return 0;
+}
+
+int filesystem::cdwoerrormessage(string to){
+    if(to==".."){
+        currentdir=currentdir->getparent();
+        return 1;
+    }
+    int tmp=0;
+    for(auto& i:currentdir->getFileSystemObjects()){
+        if(i->getname()==to){
+        tmp+=1;
+        directory* temp=dynamic_cast<directory*>(i);
+        if(temp!=nullptr){
+            currentdir=temp;
+            return 1;
+        }
+        else{
+            return 0;
+        }
+        }
     }
     return 0;
 }
@@ -178,28 +207,23 @@ void filesystem::load(string fname){
                 if(f=='f'){
                     currentdir=root;
                     for(unsigned int i=1;i<pathh.size()-1;i++){
-                        if(this->cd(pathh[i])==0) {
-                            this->mkdir(pathh[i]);
-                            system(CLEAR);
+                        if(this->cdwoerrormessage(pathh[i])==0) {
+                            this->mkdirwoerrormessage(pathh[i]);
                         }
-                        this->cd(pathh[i]);
-                        system(CLEAR);
+                        this->cdwoerrormessage(pathh[i]);
                     }
                     this->touch(pathh[pathh.size()-1]);                }
                 else if(f=='d'){
                     currentdir=root;
                     for(unsigned int i=1;i<pathh.size()-1;i++){
-                        if(this->cd(pathh[i])==0) {
-                            this->mkdir(pathh[i]);
-                            system(CLEAR);
+                        if(this->cdwoerrormessage(pathh[i])==0) {
+                            this->mkdirwoerrormessage(pathh[i]);
                         }
-                        this->cd(pathh[i]);
-                        system(CLEAR);
+                        this->cdwoerrormessage(pathh[i]);
                     }
-                    this->mkdir(pathh[pathh.size()-1]);
+                    this->mkdirwoerrormessage(pathh[pathh.size()-1]);
                 }
         }
-        system(CLEAR);
         currentdir=root;
     }
 }
@@ -211,13 +235,13 @@ void filesystem::start(){
     cin>>save;
     cout<<"Fajl ahonnan betoltson: ";
     cin>>load;
+    cin.ignore();
     this->load(load);
     string command;
     string fullcommand;
     string argument1;
     string argument2;
     do{
-       cin.ignore();
        getline(cin,fullcommand);
        istringstream line(fullcommand);
        command=argument1="";
@@ -262,7 +286,7 @@ void filesystem::start(){
                if(argument1=="")
                    cout<<"Adja meg a mappa nevet amit torolni akar"<<endl;
                else {
-                   currentdir->rmrf(argument1);
+                 currentdir->rmrf(argument1);
                }
            }
            else if(command=="touch"){

@@ -10,7 +10,6 @@ class directory : public ancestor
 {
 private:
     list<ancestor*> FileSystemObjects;
-    void segedrmrf();
 public:
     directory(string name,directory*parent);
     ~directory() override;
@@ -20,10 +19,9 @@ public:
     void ls();
     bool hasDirs();
     void makefolder(string);
+    void segedrmrf();
     void touch(string);
-    void rm(string);
+    int rm(string);
     void rmrf(string);
-    //friend std::ostream& operator << (std::ostream& os, directory* d);
-    //void Print(std::ostream& os,directory* d) const;
 };
 #endif // DIRECTORY_H

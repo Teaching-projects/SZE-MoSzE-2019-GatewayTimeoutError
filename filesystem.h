@@ -10,11 +10,12 @@ private:
     directory* root;
     directory* currentdir;
     int mkdir(string);
+    int mkdirwoerrormessage(string);
     int touch(string);
     void ls();
     int cd(string);
+    int cdwoerrormessage(string);
     vector<string> split(const string&, const char&);
-
 public:
     filesystem();
     ~filesystem();
