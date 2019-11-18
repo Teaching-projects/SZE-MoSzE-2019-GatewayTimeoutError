@@ -12,7 +12,7 @@ filesystem::~filesystem()
 }
 int filesystem::mkdir(string n)
 {
-    for(auto i:currentdir->getSubdirectories()){
+    for(auto i:currentdir->getItems()){
             if(i->getname()==n){
                 cout<<"Ez a nev mar foglalt"<<endl;
                 return 0;
@@ -22,7 +22,7 @@ int filesystem::mkdir(string n)
     return 1;
 }
 int filesystem::touch(string filename){
-    for(auto i:currentdir->getSubdirectories()){
+    for(auto i:currentdir->getItems()){
         if(i->getname()==filename){
             cout<<"Ez a nev mar foglalt"<<endl;
             return 0;
@@ -45,7 +45,7 @@ void filesystem::ls(){
         cout<<"/";
     }
     cout<<endl;
-    for(auto i:currentdir->getSubdirectories()){
+    for(auto i:currentdir->getItems()){
         cout<<"   "<<i->getname();
         cout<<endl;
     }
@@ -57,7 +57,7 @@ int filesystem::cd(string to){
         return 1;
     }
     int tmp=0;
-    for(auto& i:currentdir->getSubdirectories()){
+    for(auto& i:currentdir->getItems()){
         //i->print();
         if(i->getname()==to){
         tmp+=1;
@@ -78,19 +78,22 @@ int filesystem::cd(string to){
     return 0;
 }
 
-vector<string> filesystem::split(const string& str, const char& delim)
+vector<string> filesystem::split(const string& line, const char& delim)
 {
-    vector<string> tokens;
-    size_t prev = 0, pos = 0;
-    do
+
+    // Vector of string to save tokens
+    vector <string> tokens;
+
+    // stringstream class check1
+    stringstream check1(line);
+
+    string intermediate;
+
+    // Tokenizing w.r.t. space ' '
+    while(getline(check1, intermediate, delim))
     {
-        pos = str.find(delim, prev);
-        if (pos == string::npos) pos = str.length();
-        string token = str.substr(prev, pos-prev);
-        if (!token.empty()) tokens.push_back(token);
-        prev = pos + 1;
+        tokens.push_back(intermediate);
     }
-    while (pos < str.length() && prev < str.length());
     return tokens;
 }
 
@@ -103,7 +106,7 @@ int filesystem::absolutepathcd(string path){
         return 0;
     }
     for(unsigned int i=1;i<route.size();i++){
-        for(auto j:currentdir->getSubdirectories()){
+        for(auto j:currentdir->getItems()){
             directory* temp=dynamic_cast<directory*>(j);
             if(temp!=nullptr){
                 if(temp->getname()==route[i]){
@@ -123,27 +126,11 @@ int filesystem::absolutepathcd(string path){
 }
 
 int filesystem::absolutepathmkdir(string path){
-    currentdir=root;
     vector<string>route=this->split(path,'/');
-    unsigned int n=route.size();
+    int n=route.size();
     string tocreate=route[n-1];
-    unsigned int flag=1;
-    if(route[0]!="root"){
-        cout<<"Nincs ilyen eleresi utvonal"<<endl;
-        return 0;
-    }
-    for(unsigned int i=1;i<route.size()-1;i++){
-        for(auto j:currentdir->getSubdirectories()){
-            directory* temp=dynamic_cast<directory*>(j);
-            if(temp!=nullptr){
-                if(temp->getname()==route[i]){
-                    currentdir=temp;
-                    flag++;
-                }
-            }
-        }
-    }
-    if(flag==route.size()-1){
+    int temp=this->util(route);
+    if(temp==1){
         currentdir->makefolder(tocreate);
         return 1;
     }
@@ -155,27 +142,11 @@ int filesystem::absolutepathmkdir(string path){
 
 int filesystem::absolutepathrm(string path)
 {
-    currentdir=root;
     vector<string>route=this->split(path,'/');
     int n=route.size();
     string todelete=route[n-1];
-    unsigned int flag=1;
-    if(route[0]!="root"){
-        cout<<"Nincs ilyen eleresi utvonal"<<endl;
-        return 0;
-    }
-    for(unsigned int i=1;i<route.size()-1;i++){
-        for(auto j:currentdir->getSubdirectories()){
-            directory* temp=dynamic_cast<directory*>(j);
-            if(temp!=nullptr){
-                if(temp->getname()==route[i]){
-                    currentdir=temp;
-                    flag++;
-                }
-            }
-        }
-    }
-    if(flag==route.size()-1){
+    int temp=this->util(route);
+    if(temp==1){
         currentdir->rm(todelete);
         return 1;
     }
@@ -187,27 +158,11 @@ int filesystem::absolutepathrm(string path)
 
 int filesystem::absolutepathrmrf(string path)
 {
-    currentdir=root;
     vector<string>route=this->split(path,'/');
     int n=route.size();
     string todelete=route[n-1];
-    unsigned int flag=1;
-    if(route[0]!="root"){
-        cout<<"Nincs ilyen eleresi utvonal"<<endl;
-        return 0;
-    }
-    for(unsigned int i=1;i<route.size()-1;i++){
-        for(auto j:currentdir->getSubdirectories()){
-            directory* temp=dynamic_cast<directory*>(j);
-            if(temp!=nullptr){
-                if(temp->getname()==route[i]){
-                    currentdir=temp;
-                    flag++;
-                }
-            }
-        }
-    }
-    if(flag==route.size()-1){
+    int temp=this->util(route);
+    if(temp==1){
         currentdir->rmrf(todelete);
         return 1;
     }
@@ -217,6 +172,28 @@ int filesystem::absolutepathrmrf(string path)
     }
 }
 
+int filesystem::util(vector<string> path){
+    currentdir=root;
+    unsigned int flag=1;
+    if(path[0]!="root"){
+        return 0;
+    }
+    for(unsigned int i=1;i<path.size()-1;i++){
+        for(auto j:currentdir->getItems()){
+            directory* temp=dynamic_cast<directory*>(j);
+            if(temp!=nullptr){
+                if(temp->getname()==path[i]){
+                    currentdir=temp;
+                    flag++;
+                }
+            }
+        }
+    }
+    if(flag==path.size()-1){
+        return 1;
+    }
+    return 0;
+}
 
 void filesystem::start(){
     string command;

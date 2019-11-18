@@ -1,21 +1,19 @@
 #ifndef DIRECTORY_H
 #define DIRECTORY_H
-#include "ancestor.h"
+#include "item.h"
 #include "file.h"
 #include <list>
 #include <vector>
 
-class directory : public ancestor
+class directory : public item
 {
 private:
-    list<ancestor*> subdirectories;
+    list<item*> items;
     void segedrmrf();
 public:
     directory(string name,directory*parent);
     ~directory() override;
-    string getname() override;
-    list<ancestor *> getSubdirectories() const;
-    directory* getparent() override;
+    list<item *> getItems() const;
     void ls();
     bool hasDirs();
     void makefolder(string);

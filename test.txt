@@ -3,6 +3,8 @@ mkdir mappa
 mkdir mappa2
 cd mappa
 touch file
+mkdir mappa3
 cd..
-ls
+rm root/mappa/mappa3
+cd root/mappa
 exit

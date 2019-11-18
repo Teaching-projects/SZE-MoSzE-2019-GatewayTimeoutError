@@ -17,6 +17,7 @@ private:
     int absolutepathrmrf(string);
     int absolutepathmkdir(string);
     vector<string> split(const string&, const char&);
+    int util(vector<string>);
 public:
     filesystem();
     ~filesystem();
