@@ -1,6 +1,6 @@
 saveto.txt
 filesystem.txt
-mkdir mappa3
-mkdir mappa1
-mkdir mappa2
+mkdir mappa
+cd asd
+mkdir megegymappa
 exit
