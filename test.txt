@@ -1,6 +1,6 @@
-ls
 mkdir mappa
 mkdir mappa2
+ls
 cd mappa
 touch file
 mkdir mappa3
