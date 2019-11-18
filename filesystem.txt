@@ -1,0 +1,7 @@
+f root/asd/file2
+f root/asd/file
+d root/asd/asd2/sad
+f root/asd/asd2/file3
+d root/asdasd/mappa
+f root/asdasd/file
+f root/file

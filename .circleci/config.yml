@@ -12,6 +12,10 @@
               - terminal
               - test.txt
               - testresult.txt
+              - test2.txt
+              - saveto.txt
+              - expected.txt
+              - filesystem.txt
               
     output:
       machine:
@@ -22,6 +26,19 @@
         - run:
             name: output
             command: ./terminal < test.txt
+
+    output2:
+      machine:
+        image: ubuntu-1604:201903-01
+      steps:
+        - attach_workspace:
+            at: ~/project      
+        - run:
+            name: output
+            command: ./terminal < test2.txt
+        - run:
+            name: diff
+            command: diff -bB expected.txt saveto.txt
 
     diff:
       machine:
@@ -39,6 +56,9 @@
       jobs:
         - build
         - output:
+           requires:
+            - build
+        - output2:
            requires:
              - build
         - diff:
