@@ -1,30 +1,27 @@
 #ifndef DIRECTORY_H
 #define DIRECTORY_H
+#include "ancestor.h"
+#include "file.h"
 
-#include <iostream>
-#include <string>
-#include <list>
-using namespace std;
 
-class directory
+
+
+class directory : public ancestor
 {
 private:
-    string name;
-    directory* parent;
-    list <directory*> subdirectories;
+    list<ancestor*> FileSystemObjects;
 public:
-    directory(string,directory*);
-    ~directory();
-    string getName() const;
-    void print();
+    directory(string name,directory*parent);
+    ~directory() override;
+    string getname() override;
+    list<ancestor *> getFileSystemObjects() const;
+    directory* getparent() override;
     void ls();
-    void makefolder(string);
-    list<directory *> getSubdirectories();
-    directory *getParent() const;
     bool hasDirs();
-    void rm(string);
+    void makefolder(string);
     void segedrmrf();
+    void touch(string);
+    int rm(string);
     void rmrf(string);
 };
-
 #endif // DIRECTORY_H

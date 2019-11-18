@@ -1,22 +1,30 @@
 #ifndef FILESYSTEM_H
 #define FILESYSTEM_H
-
 #include "directory.h"
-#include <list>
+#include <sstream>
+#include <fstream>
 
 class filesystem
 {
 private:
-    list <directory*> directories;
     directory* root;
+    directory* currentdir;
+    int mkdir(string);
+    int mkdirwoerrormessage(string);
+    int touch(string);
+    void ls();
+    int cd(string);
+    int cdwoerrormessage(string);
+    vector<string> split(const string&, const char&);
 public:
     filesystem();
     ~filesystem();
-    int mkdir(string);
-    void ls();
-    int cd(string);
-    directory* currentdir;
     void start();
+    void save(string);
+    void load(string);
+    friend std::ostream& operator << (std::ostream& os, directory* d);
+    void Print(std::ostream& os,directory* d) const;
+    directory *getRoot() const;
 };
 
 #endif // FILESYSTEM_H
