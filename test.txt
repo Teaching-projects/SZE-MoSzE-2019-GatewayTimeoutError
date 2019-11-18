@@ -5,6 +5,5 @@ cd mappa
 touch file
 mkdir mappa3
 cd..
-rm root/mappa/mappa3
-cd root/mappa
+cd root/mappa/mappa3
 exit

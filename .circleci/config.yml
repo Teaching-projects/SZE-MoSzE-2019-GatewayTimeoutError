@@ -11,7 +11,6 @@
             paths:
               - terminal
               - test.txt
-              - testresult.txt
               
     output:
       machine:
