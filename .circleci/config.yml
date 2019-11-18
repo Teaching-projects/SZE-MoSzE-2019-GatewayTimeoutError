@@ -31,6 +31,3 @@
         - output:
            requires:
              - build
-        - diff:
-           requires:
-             - output
