@@ -35,5 +35,4 @@ bool file::isDir() const
 }
 
 file::~file(){
-    delete this;
 }

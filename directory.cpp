@@ -12,7 +12,6 @@ directory::~directory()
     for(auto i:subdirectories){
         delete i;
     }
-    delete this;
 }
 
 const list<ancestor *> &directory::getSubdirectories()
