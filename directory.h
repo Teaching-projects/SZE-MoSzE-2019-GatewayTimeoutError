@@ -14,13 +14,13 @@ public:
     directory(string name,directory*parent);
     ~directory() override;
     string getname() override;
-    list<ancestor *> getSubdirectories() const;
+    list<ancestor *> &getSubdirectories() const;
     directory* getparent() override;
     void ls();
     bool hasDirs();
     void makefolder(string);
     void touch(string);
-    void rm(string);
+    int rm(string);
     void rmrf(string);
     bool isDir() const;
     void echo(string content, string name);

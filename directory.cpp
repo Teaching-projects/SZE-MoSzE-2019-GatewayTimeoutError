@@ -15,7 +15,7 @@ directory::~directory()
     }
 }
 
-list<ancestor *> directory::getSubdirectories() const
+list<ancestor *> &directory::getSubdirectories() const
 {
     return subdirectories;
 }
@@ -61,60 +61,89 @@ void directory::echo(string content, string name){
     subdirectories.push_back(new file(name,this,content));
 }
 
-void directory::rm(string todelete)
+int directory::rm(string todelete)
 {
-    for(auto it=subdirectories.begin();it!=subdirectories.end();){
-        directory* temp=dynamic_cast<directory*>(*it);
-        if(temp->getname()==todelete &&!temp->hasDirs()){
-            it=this->subdirectories.erase(it);
+    std::list<ancestor*>::iterator i = subdirectories.begin();
+    while (i != subdirectories.end())
+    {
+        if((*i)->getname()==todelete){
+            directory* temp=dynamic_cast<directory*>(*i);
+            if(temp!=nullptr){
+            //ha üres a mappa kitöröljük és továbbiterálunk
+                if(!temp->hasDirs()){
+                    subdirectories.erase(i++);
+                    return 1;
+                }
+                else{
+                    cout<<"Az adott mappa nem ures"<<endl;
+                    return 0;
+                }
+            }
+            else{
+                subdirectories.erase(i++);
+                return 1;
+            }
         }
-        else if(temp->getname()==todelete &&temp->hasDirs()){
-            cout<<"Az adott mappa nem ures"<<endl;
-            it++;
-        }
-        else{
-            it++;
+        else
+        {
+            ++i;
         }
     }
-
+    return 0;
 }
+
 void directory::segedrmrf(){
     for(auto it=subdirectories.begin();it!=subdirectories.end();)
     {
         directory* temp=dynamic_cast<directory*>(*it);
         if(temp!=nullptr){
+            //ha a mappa nem üres meghívjuk a segedrmrf-et az adott mappára
             if(temp->hasDirs()){
                 temp->segedrmrf();
             }
+            //ha üres a mappa töröljük
             else if(!temp->hasDirs()){
+                cout<<(*it)->getname()<<" torolve"<<endl;
                 it=this->subdirectories.erase(it);
             }
-            else{
-                it++;
-            }
         }
+        //ha fájl akkor töröljük
         else{
+            cout<<(*it)->getname()<<" torolve"<<endl;
             it=this->subdirectories.erase(it);
         }
     }
+
 }
+
 void directory::rmrf(string todelete)
 {
-    for(auto it=subdirectories.begin();it!=subdirectories.end();){
-        directory* temp=dynamic_cast<directory*>(*it);
-        if(temp!=nullptr){
-            if(temp->getname()==todelete &&!temp->hasDirs()){
-                it=this->subdirectories.erase(it);
-            }
-            else if(temp->getname()==todelete &&temp->hasDirs()){
-                temp->segedrmrf();
+    std::list<ancestor*>::iterator i = subdirectories.begin();
+    while (i != subdirectories.end())
+    {
+        if((*i)->getname()==todelete){
+            directory* temp=dynamic_cast<directory*>(*i);
+            if(temp!=nullptr){
+            //ha üres a mappa kitöröljük és továbbiterálunk
+                if(!temp->hasDirs()){
+                    cout<<(*i)->getname()<<" torolve"<<endl;
+                    subdirectories.erase(i++);
+                }
+                //ha nem üres meghívjuk a segedrmrf-et ami rekurzívan bejárja az adott mappát
+                else{
+                    temp->segedrmrf();
+                }
             }
             else{
-                it++;
+                cout<<(*i)->getname()<<" torolve"<<endl;
+                subdirectories.erase(i++);
             }
         }
+        else
+        {
+            ++i;
+        }
     }
-
 }
 bool directory::isDir() const
 {
