@@ -35,6 +35,5 @@ bool file::isDir() const
 }
 
 file::~file(){
-    cout<<this->getname()<< "torolve"<<endl;
     delete this;
 }
