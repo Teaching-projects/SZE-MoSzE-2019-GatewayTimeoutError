@@ -17,6 +17,7 @@ public:
     filesystem();
     ~filesystem();
     void start();
+    int move(string,string);
 };
 
 #endif // FILESYSTEM_H

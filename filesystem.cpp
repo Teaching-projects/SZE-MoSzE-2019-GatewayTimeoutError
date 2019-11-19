@@ -85,12 +85,11 @@ int filesystem::cd(string to){
 }
 
 int filesystem::echo(string content,string fname){
-    for(auto i:currentdir->getSubdirectories()){
+    for(auto &i:currentdir->getSubdirectories()){
             if(i->getname()==fname){
                 file* tempfile=dynamic_cast<file*>(i);
-                if(tempfile!=nullptr){
+                if(tempfile){
                     tempfile->setContent(content);
-                    i=tempfile;
                     return 1;
                 }
                 else{
@@ -103,6 +102,7 @@ int filesystem::echo(string content,string fname){
     currentdir->echo(content,fname);
     return 1;
 }
+
 
 void filesystem::start(){
     string command;
@@ -145,7 +145,6 @@ void filesystem::start(){
                if(argument1=="")
                    cout<<"Adja meg a mappa nevet amit torolni akar"<<endl;
                else if(argument1=="-rf"){
-                   cout<<argument2;
                    if(argument2==""){
                         cout<<"Adja meg a mappa nevet amit torolni akar"<<endl;
                    }

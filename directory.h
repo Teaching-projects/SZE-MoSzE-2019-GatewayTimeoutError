@@ -9,19 +9,18 @@ class directory : public ancestor
 {
 private:
     list<ancestor*> subdirectories;
-    void segedrmrf();
 public:
     directory(string name,directory*parent);
     ~directory() override;
     string getname() override;
-    list<ancestor *> &getSubdirectories();
+    const list<ancestor *> &getSubdirectories();
     directory* getparent() override;
     void ls();
     bool hasDirs();
     void makefolder(string);
     void touch(string);
     int rm(string);
-    void rmrf(string);
+    int rmrf(string);
     bool isDir() const;
     void echo(string content, string name);
 };
