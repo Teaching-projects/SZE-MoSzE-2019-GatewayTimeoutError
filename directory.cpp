@@ -14,7 +14,7 @@ directory::~directory()
     }
 }
 
-list<ancestor *> directory::getFileSystemObjects() const
+const list<ancestor *> &directory::getFileSystemObjects()
 {
     return FileSystemObjects;
 }
@@ -24,7 +24,7 @@ directory *directory::getparent()
     directory* temp=dynamic_cast<directory*>(this->parent);
     return temp;
 }
-
+  
 string directory::getname()
 {
     return this->name;
@@ -51,6 +51,11 @@ void directory::touch(string name)
     FileSystemObjects.push_back(new file(name,this));
 }
 
+void directory::echo(string content, string name){
+    FileSystemObjects.push_back(new file(name,this,content));
+}
+
+
 int directory::rm(string todelete)
 {
     std::list<ancestor*>::iterator i = FileSystemObjects.begin();
@@ -59,9 +64,10 @@ int directory::rm(string todelete)
         if((*i)->getname()==todelete){
             directory* temp=dynamic_cast<directory*>(*i);
             if(temp!=nullptr){
-            //ha üres a mappa kitöröljük és továbbiterálunk
+                //ha üres a mappa kitöröljük
                 if(!temp->hasDirs()){
-                    FileSystemObjects.erase(i++);
+                    cout<<(*i)->getname()<< " torolve"<<endl;
+                    FileSystemObjects.erase(i);
                     return 1;
                 }
                 else{
@@ -70,69 +76,35 @@ int directory::rm(string todelete)
                 }
             }
             else{
-                FileSystemObjects.erase(i++);
+                cout<<(*i)->getname()<< " torolve"<<endl;
+                FileSystemObjects.erase(i);
                 return 1;
             }
         }
         else
         {
             ++i;
-        }          
+        }
     }
+    cout<<"Nem letezo mappa/file"<<endl;
     return 0;
 }
 
-void directory::segedrmrf(){
-    for(auto it=FileSystemObjects.begin();it!=FileSystemObjects.end();)
-    {
-        directory* temp=dynamic_cast<directory*>(*it);
-        if(temp!=nullptr){
-            //ha a mappa nem üres meghívjuk a segedrmrf-et az adott mappára
-            if(temp->hasDirs()){
-                temp->segedrmrf();
-            }
-            //ha üres a mappa töröljük
-            else if(!temp->hasDirs()){
-                cout<<(*it)->getname()<<" torolve"<<endl;
-                it=this->FileSystemObjects.erase(it);
-            }
-        }
-        //ha fájl akkor töröljük
-        else{
-            cout<<(*it)->getname()<<" torolve"<<endl;
-            it=this->FileSystemObjects.erase(it);
-        }
-    }
-
-}
-
-void directory::rmrf(string todelete)
+int directory::rmrf(string todelete)
 {
     std::list<ancestor*>::iterator i = FileSystemObjects.begin();
     while (i != FileSystemObjects.end())
     {
         if((*i)->getname()==todelete){
-            directory* temp=dynamic_cast<directory*>(*i);
-            if(temp!=nullptr){
-            //ha üres a mappa kitöröljük és továbbiterálunk
-                if(!temp->hasDirs()){
-                    cout<<(*i)->getname()<<" torolve"<<endl;
-                    FileSystemObjects.erase(i++);
-                }
-                //ha nem üres meghívjuk a segedrmrf-et ami rekurzívan bejárja az adott mappát
-                else{
-                    temp->segedrmrf();
-                }
-            }
-            else{
-                cout<<(*i)->getname()<<" torolve"<<endl;
-                FileSystemObjects.erase(i++);
-            }
+            cout<<(*i)->getname()<< " torolve"<<endl;
+            FileSystemObjects.erase(i);
+            return 1;
         }
         else
         {
             ++i;
         }
     }
+    cout<<"Nem letezo mappa/file"<<endl;
+    return 0;
 }
-

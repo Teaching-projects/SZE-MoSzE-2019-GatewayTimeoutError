@@ -1,7 +1,5 @@
 #include "filesystem.h"
 
-
-
 filesystem::filesystem()
 {
     root=new directory("root",nullptr);
@@ -12,6 +10,7 @@ filesystem::~filesystem()
 {
     delete root;
 }
+
 directory *filesystem::getRoot() const
 {
     return root;
@@ -66,15 +65,17 @@ void filesystem::ls(){
     cout<<endl;
     for(auto i:currentdir->getFileSystemObjects()){
         cout<<"   "<<i->getname();
+        file* temp=dynamic_cast<file*>(i);
+        if(temp!=nullptr){
+            if(!temp->getContent().empty()){
+            cout<<" ("<<temp->getContent()<<")";
+            }
+        }
         cout<<endl;
     }
 }
 
 int filesystem::cd(string to){
-    if(to==".."){
-        currentdir=currentdir->getparent();
-        return 1;
-    }
     int tmp=0;
     for(auto& i:currentdir->getFileSystemObjects()){
         if(i->getname()==to){
@@ -97,25 +98,44 @@ int filesystem::cd(string to){
 }
 
 int filesystem::cdwoerrormessage(string to){
-    if(to==".."){
-        currentdir=currentdir->getparent();
-        return 1;
-    }
-    int tmp=0;
-    for(auto& i:currentdir->getFileSystemObjects()){
-        if(i->getname()==to){
-        tmp+=1;
-        directory* temp=dynamic_cast<directory*>(i);
-        if(temp!=nullptr){
-            currentdir=temp;
+        if(to==".."){
+            currentdir=currentdir->getparent();
             return 1;
         }
-        else{
-            return 0;
+        int tmp=0;
+        for(auto& i:currentdir->getFileSystemObjects()){
+            if(i->getname()==to){
+            tmp+=1;
+            directory* temp=dynamic_cast<directory*>(i);
+            if(temp!=nullptr){
+                currentdir=temp;
+                return 1;
+            }
+            else{
+                return 0;
+            }
+            }
         }
-        }
+        return 0;
+}
+
+int filesystem::echo(string content,string fname){
+    for(auto &i:currentdir->getFileSystemObjects()){
+            if(i->getname()==fname){
+                file* tempfile=dynamic_cast<file*>(i);
+                if(tempfile){
+                    tempfile->setContent(content);
+                    return 1;
+                }
+                else{
+                    cout<<"Directoryba nem lehet echozni"<<endl;
+                    return 0;
+                }
+            }
+
     }
-    return 0;
+    currentdir->echo(content,fname);
+    return 1;
 }
 
 vector<string> filesystem::split(const string& str, const char& delim)
@@ -244,9 +264,10 @@ void filesystem::start(){
     do{
        getline(cin,fullcommand);
        istringstream line(fullcommand);
-       command=argument1="";
+       command=argument1=argument2="";
        line>>command;
        line>>argument1;
+       line>>argument2;
 
            if (command=="ls")
            {
@@ -255,16 +276,13 @@ void filesystem::start(){
            else if (command=="cd")
            {
                if(argument1=="") cout<<"Adjon meg egy mappanevet"<<endl;
+               else if(argument1==".."){
+                   if(currentdir->getparent()!=nullptr) currentdir=currentdir->getparent();
+                   else cout<<"cd .. nem megengedett a rootbol"<<endl;
+               }
                else{
                    this->cd(argument1);
                }
-           }
-           else if(command=="cd.."){
-               if(currentdir==root){
-                   cout<<"Rootbol nem lehet cd..-zni"<<endl;
-               }
-               else
-                   currentdir=currentdir->getparent();
            }
            else if (command=="mkdir")
            {
@@ -278,15 +296,16 @@ void filesystem::start(){
            else if (command=="rm"){
                if(argument1=="")
                    cout<<"Adja meg a mappa nevet amit torolni akar"<<endl;
+               else if(argument1=="-rf"){
+                   if(argument2==""){
+                        cout<<"Adja meg a mappa nevet amit torolni akar"<<endl;
+                   }
+                   else {
+                        currentdir->rmrf(argument2);
+                    }
+               }
                else {
                    currentdir->rm(argument1);
-               }
-           }
-           else if(command=="rm-rf"){
-               if(argument1=="")
-                   cout<<"Adja meg a mappa nevet amit torolni akar"<<endl;
-               else {
-                 currentdir->rmrf(argument1);
                }
            }
            else if(command=="touch"){
@@ -295,6 +314,32 @@ void filesystem::start(){
                else {
                    this->touch(argument1);
                }
+           }
+           else if(command=="echo"){
+               string content="";
+               string arg="";
+               int pos=fullcommand.find('"');
+                if(pos!=std::string::npos && pos==5){
+                    int pos2=fullcommand.find('"',pos+1);
+                    if(pos2!=std::string::npos){
+                        content=fullcommand.substr(pos+1,pos2-pos-1);
+                        arg=fullcommand.substr(pos2+1);
+                        istringstream args(arg);
+                        char t;
+                        string filenev;
+                        args>>t;
+                        args>>filenev;
+                        if(t!='>' || filenev==""){
+                            cout<<"Lemaradt valami"<<endl;
+                        }
+                        else if(t=='>' && filenev!=""){
+                            echo(content,filenev);
+                        }
+                        }
+                else{
+                    cout<<"Unknown command"<<endl;
+                }
+           }
            }
            else if(command=="exit"){
                this->save(save);

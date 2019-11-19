@@ -1,8 +1,17 @@
 #include "file.h"
 
+string file::getContent() const
+{
+    return content;
+}
 file::file(string name, ancestor* parent):ancestor(name,parent)
 {
 
+}
+
+file::file(string name, ancestor *, string content):ancestor(name,parent)
+{
+    this->content=content;
 }
 
 string file::getname()
@@ -15,27 +24,11 @@ ancestor *file::getparent()
     return this->parent;
 }
 
+void file::setContent(string content){
+    this->content=content;
+}
+
+
 file::~file(){
 }
 
-/*void file::Printfile(std::ostream& os,
-                 file *d) const{
-    list<string> path;
-    ancestor* temp=d->getparent();
-    os<<d->getparent()->getname();
-    path.push_front(temp->getname());
-    while(d->getparent()){
-       path.push_front(d->getparent()->getname());
-       temp=temp->getparent();
-    }
-    os<<"f ";
-    for(auto i:path){
-          os<<i<<"/";
-        }
-    os<<d->getname()<<endl;
-}
-
-std::ostream& operator << (std::ostream& os, file* d) {
-  d->Printfile(os,d);
-  return os;
-}*/

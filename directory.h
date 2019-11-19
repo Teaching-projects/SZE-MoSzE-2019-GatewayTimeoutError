@@ -3,9 +3,6 @@
 #include "ancestor.h"
 #include "file.h"
 
-
-
-
 class directory : public ancestor
 {
 private:
@@ -14,14 +11,14 @@ public:
     directory(string name,directory*parent);
     ~directory() override;
     string getname() override;
-    list<ancestor *> getFileSystemObjects() const;
+    const list<ancestor *> &getFileSystemObjects();
     directory* getparent() override;
     void ls();
     bool hasDirs();
     void makefolder(string);
-    void segedrmrf();
-    void touch(string);
     int rm(string);
-    void rmrf(string);
+    int rmrf(string);
+    void echo(string content, string name);
+    void touch(string);
 };
 #endif // DIRECTORY_H
