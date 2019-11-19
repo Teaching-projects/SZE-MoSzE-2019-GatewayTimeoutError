@@ -1,0 +1,14 @@
+Milyen fajlba mentsen: Fajl ahonnan betoltson: Nem sikerult megnyitni
+root/asd/
+   asd1
+   asd2
+file1 torolve
+asd3 torolve
+file3 torolve
+asd1 torolve
+asd2 torolve
+asd torolve
+root/
+   asdasd
+   file
+VISZLAT

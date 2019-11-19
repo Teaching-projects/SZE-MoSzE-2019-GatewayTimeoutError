@@ -4,7 +4,6 @@ string file::getContent() const
 {
     return content;
 }
-
 file::file(string name, directory* parent):ancestor(name,parent)
 {
 
@@ -29,10 +28,7 @@ void file::setContent(string content){
     this->content=content;
 }
 
-bool file::isDir() const
-{
-    return false;
-}
 
 file::~file(){
 }
+

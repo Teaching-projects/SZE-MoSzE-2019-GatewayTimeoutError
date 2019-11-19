@@ -1,8 +1,18 @@
-ls
-mkdir mappa
-mkdir mappa2
-cd mappa
+save.txt
+save.txt
+mkdir asd
+mkdir asdasd
 touch file
-cd..
+cd asd
+mkdir asd1
+mkdir asd2
+ls
+cd asd1
+touch file1
+mkdir asd3
+touch file3
+cd ..
+cd ..
+rm-rf asd
 ls
 exit

@@ -9,62 +9,56 @@ directory::directory(string name, directory *parent):ancestor(name,parent)
 
 directory::~directory()
 {
-    for(auto i:subdirectories){
+    for(auto i:FileSystemObjects){
         delete i;
     }
 }
 
-const list<ancestor *> &directory::getSubdirectories()
+const list<ancestor *> directory::getFileSystemObjects()
 {
-    return subdirectories;
+    return FileSystemObjects;
 }
 
 directory *directory::getparent()
 {
     return this->parent;
 }
-
-
-
-
+  
 string directory::getname()
 {
     return this->name;
 }
 
 void directory::ls(){
-    for(ancestor* i:subdirectories){
+    for(ancestor* i:FileSystemObjects){
         cout<<i->getname()<<endl;
     }
 }
 
 bool directory::hasDirs()
 {
-    if(this->getSubdirectories().empty()){
-        return false;
-    }
-    return true;
+    return !this->getFileSystemObjects().empty();
 }
 
 void directory::makefolder(string n)
 {
-    subdirectories.push_back(new directory(n,this));
+    FileSystemObjects.push_back(new directory(n,this));
 }
 
 void directory::touch(string name)
 {
-    subdirectories.push_back(new file(name,this));
+    FileSystemObjects.push_back(new file(name,this));
 }
 
 void directory::echo(string content, string name){
-    subdirectories.push_back(new file(name,this,content));
+    FileSystemObjects.push_back(new file(name,this,content));
 }
 
 
 int directory::rm(string todelete)
 {
-    std::list<ancestor*>::iterator i = subdirectories.begin();
-    while (i != subdirectories.end())
+    std::list<ancestor*>::iterator i = FileSystemObjects.begin();
+    while (i != FileSystemObjects.end())
     {
         if((*i)->getname()==todelete){
             directory* temp=dynamic_cast<directory*>(*i);
@@ -72,7 +66,7 @@ int directory::rm(string todelete)
                 //ha üres a mappa kitöröljük
                 if(!temp->hasDirs()){
                     cout<<(*i)->getname()<< " torolve"<<endl;
-                    subdirectories.erase(i);
+                    FileSystemObjects.erase(i);
                     return 1;
                 }
                 else{
@@ -82,7 +76,7 @@ int directory::rm(string todelete)
             }
             else{
                 cout<<(*i)->getname()<< " torolve"<<endl;
-                subdirectories.erase(i);
+                FileSystemObjects.erase(i);
                 return 1;
             }
         }
@@ -97,12 +91,12 @@ int directory::rm(string todelete)
 
 int directory::rmrf(string todelete)
 {
-    std::list<ancestor*>::iterator i = subdirectories.begin();
-    while (i != subdirectories.end())
+    std::list<ancestor*>::iterator i = FileSystemObjects.begin();
+    while (i != FileSystemObjects.end())
     {
         if((*i)->getname()==todelete){
             cout<<(*i)->getname()<< " torolve"<<endl;
-            subdirectories.erase(i);
+            FileSystemObjects.erase(i);
             return 1;
         }
         else
@@ -113,8 +107,3 @@ int directory::rmrf(string todelete)
     cout<<"Nem letezo mappa/file"<<endl;
     return 0;
 }
-bool directory::isDir() const
-{
-    return true;
-}
-

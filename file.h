@@ -10,11 +10,10 @@ public:
     file(string,directory*);
     file(string,directory*,string);
     ~file() override;
+    void setContent(string);
+    string getContent() const;
     string getname() override;
     directory* getparent() override;
-    void setContent(string);
-    bool isDir() const;
-    string getContent() const;
 };
 
 #endif // FILE_H
