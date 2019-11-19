@@ -4,12 +4,12 @@ string file::getContent() const
 {
     return content;
 }
-file::file(string name, directory* parent):ancestor(name,parent)
+file::file(string name, ancestor* parent):ancestor(name,parent)
 {
 
 }
 
-file::file(string name, directory *, string content):ancestor(name,parent)
+file::file(string name, ancestor *, string content):ancestor(name,parent)
 {
     this->content=content;
 }
@@ -19,7 +19,7 @@ string file::getname()
     return this->name;
 }
 
-directory *file::getparent()
+ancestor *file::getparent()
 {
     return this->parent;
 }

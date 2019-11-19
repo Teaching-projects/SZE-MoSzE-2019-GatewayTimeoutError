@@ -65,8 +65,8 @@ void filesystem::ls(){
     cout<<endl;
     for(auto i:currentdir->getFileSystemObjects()){
         cout<<"   "<<i->getname();
-        if(i->isDir()==false){
-            file* temp=dynamic_cast<file*>(i);
+        file* temp=dynamic_cast<file*>(i);
+        if(temp!=nullptr){
             if(!temp->getContent().empty()){
             cout<<" ("<<temp->getContent()<<")";
             }
@@ -89,6 +89,7 @@ int filesystem::cd(string to){
             cout<<"File-ba nem lehet cd-zni"<<endl;
             return 0;
         }
+        }
     }
     if(tmp==0){
         cout<<"Az adott mappa nem letezik"<<endl;
@@ -97,27 +98,25 @@ int filesystem::cd(string to){
 }
 
 int filesystem::cdwoerrormessage(string to){
-    if(to==".."){
-        currentdir=currentdir->getparent();
-        return 1;
-    }
-    int tmp=0;
-    for(auto& i:currentdir->getFileSystemObjects()){
-        if(i->getname()==to){
-        tmp+=1;
-        directory* temp=dynamic_cast<directory*>(i);
-        if(temp!=nullptr){
-            currentdir=temp;
+        if(to==".."){
+            currentdir=currentdir->getparent();
             return 1;
         }
-        else{
-            return 0;
+        int tmp=0;
+        for(auto& i:currentdir->getFileSystemObjects()){
+            if(i->getname()==to){
+            tmp+=1;
+            directory* temp=dynamic_cast<directory*>(i);
+            if(temp!=nullptr){
+                currentdir=temp;
+                return 1;
+            }
+            else{
+                return 0;
+            }
+            }
         }
-    }
-    if(tmp==0){
-        cout<<"Az adott mappa nem letezik"<<endl;
-    }
-    return 0;
+        return 0;
 }
 
 int filesystem::echo(string content,string fname){
@@ -340,6 +339,7 @@ void filesystem::start(){
                 else{
                     cout<<"Unknown command"<<endl;
                 }
+           }
            }
            else if(command=="exit"){
                this->save(save);

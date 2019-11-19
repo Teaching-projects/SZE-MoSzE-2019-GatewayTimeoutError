@@ -14,14 +14,15 @@ directory::~directory()
     }
 }
 
-const list<ancestor *> directory::getFileSystemObjects()
+const list<ancestor *> &directory::getFileSystemObjects()
 {
     return FileSystemObjects;
 }
 
 directory *directory::getparent()
 {
-    return this->parent;
+    directory* temp=dynamic_cast<directory*>(this->parent);
+    return temp;
 }
   
 string directory::getname()
