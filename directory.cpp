@@ -15,7 +15,7 @@ directory::~directory()
     }
 }
 
-list<ancestor *> &directory::getSubdirectories() const
+list<ancestor *> &directory::getSubdirectories()
 {
     return subdirectories;
 }

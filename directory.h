@@ -14,7 +14,7 @@ public:
     directory(string name,directory*parent);
     ~directory() override;
     string getname() override;
-    list<ancestor *> &getSubdirectories() const;
+    list<ancestor *> &getSubdirectories();
     directory* getparent() override;
     void ls();
     bool hasDirs();
