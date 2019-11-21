@@ -2,23 +2,22 @@
 #define DIRECTORY_H
 #include "item.h"
 #include "file.h"
-#include <list>
-#include <vector>
 
 class directory : public item
 {
 private:
-    list<item*> items;
-    void segedrmrf();
+    list<item*> FileSystemObjects;
 public:
     directory(string name,directory*parent);
     ~directory() override;
-    list<item *> getItems() const;
+    directory* getparent();
     void ls();
     bool hasDirs();
     void makefolder(string);
     void touch(string);
-    void rm(string);
-    void rmrf(string);
+    const list<item *> &getFileSystemObjects();
+    int rm(string);
+    int rmrf(string);
+    void echo(string content, string name);
 };
 #endif // DIRECTORY_H

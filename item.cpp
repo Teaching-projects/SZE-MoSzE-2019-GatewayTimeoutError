@@ -1,6 +1,6 @@
 #include "item.h"
 
-item::item(string name, directory* parent)
+item::item(string name, item* parent)
 {
     this->name=name;
     this->parent=parent;
@@ -11,7 +11,7 @@ string item::getname()
     return this->name;
 }
 
-directory *item::getparent()
+item *item::getparent()
 {
     return this->parent;
 }

@@ -2,19 +2,20 @@
 #define ANCESTOR_H
 #include <string>
 #include <iostream>
+#include <list>
+#include <vector>
+#include <stdlib.h>
 using namespace std;
-class directory;
-
 
 class item{
 protected:
     string name;
-    directory* parent;
+    item* parent;
 public:
-    item(string,directory*);
+    item(string,item*);
     virtual ~item()=0;
     string getname();
-    directory* getparent();
+    item* getparent();
 };
 
 #endif // ANCESTOR_H

@@ -9,94 +9,99 @@ directory::directory(string name, directory *parent):item(name,parent)
 
 directory::~directory()
 {
-    //delete parent;
-    for(auto i:items){
+    for(auto i:FileSystemObjects){
         delete i;
     }
 }
 
-list<item *> directory::getItems() const
+const list<item *> &directory::getFileSystemObjects()
 {
-    return items;
+    return FileSystemObjects;
 }
 
+directory *directory::getparent()
+{
+    directory* temp=dynamic_cast<directory*>(this->parent);
+    return temp;
+}
+
+
 void directory::ls(){
-    for(item* i:items){
+    for(item* i:FileSystemObjects){
         cout<<i->getname()<<endl;
     }
 }
 
 bool directory::hasDirs()
 {
-    if(this->getItems().empty()){
-        return false;
-    }
-    return true;
+    return !this->getFileSystemObjects().empty();
 }
 
 void directory::makefolder(string n)
 {
-    items.push_back(new directory(n,this));
+    FileSystemObjects.push_back(new directory(n,this));
 }
 
 void directory::touch(string name)
 {
-    items.push_back(new file(name,this));
+    FileSystemObjects.push_back(new file(name,this));
 }
 
-void directory::rm(string todelete)
+void directory::echo(string content, string name){
+    FileSystemObjects.push_back(new file(name,this,content));
+}
+
+
+int directory::rm(string todelete)
 {
-    for(auto it=items.begin();it!=items.end();){
-        directory* temp=dynamic_cast<directory*>(*it);
-        if(temp->getname()==todelete &&!temp->hasDirs()){
-            it=this->items.erase(it);
-        }
-        else if(temp->getname()==todelete &&temp->hasDirs()){
-            cout<<"Az adott mappa nem ures"<<endl;
-            it++;
-        }
-        else{
-            it++;
-        }
-    }
-
-}
-void directory::segedrmrf(){
-    for(auto it=items.begin();it!=items.end();)
+    std::list<item*>::iterator i = FileSystemObjects.begin();
+    while (i != FileSystemObjects.end())
     {
-        directory* temp=dynamic_cast<directory*>(*it);
-        if(temp!=nullptr){
-            if(temp->hasDirs()){
-                temp->segedrmrf();
-            }
-            else if(!temp->hasDirs()){
-                it=this->items.erase(it);
+        if((*i)->getname()==todelete){
+            directory* temp=dynamic_cast<directory*>(*i);
+            if(temp!=nullptr){
+                //ha üres a mappa kitöröljük
+                if(!temp->hasDirs()){
+                    cout<<(*i)->getname()<< " torolve"<<endl;
+                    FileSystemObjects.erase(i);
+                    return 1;
+                }
+                else{
+                    cout<<"Az adott mappa nem ures"<<endl;
+                    return 0;
+                }
             }
             else{
-                it++;
+                cout<<(*i)->getname()<< " torolve"<<endl;
+                FileSystemObjects.erase(i);
+                return 1;
             }
         }
-        else{
-            it=this->items.erase(it);
+        else
+        {
+            ++i;
         }
     }
+    cout<<"Nem letezo mappa/file"<<endl;
+    return 0;
 }
-void directory::rmrf(string todelete)
+
+int directory::rmrf(string todelete)
 {
-    for(auto it=items.begin();it!=items.end();){
-        directory* temp=dynamic_cast<directory*>(*it);
-        if(temp!=nullptr){
-            if(temp->getname()==todelete &&!temp->hasDirs()){
-                it=this->items.erase(it);
-            }
-            else if(temp->getname()==todelete &&temp->hasDirs()){
-                temp->segedrmrf();
-            }
-            else{
-                it++;
-            }
+    std::list<item*>::iterator i = FileSystemObjects.begin();
+    while (i != FileSystemObjects.end())
+    {
+        if((*i)->getname()==todelete){
+            cout<<(*i)->getname()<< " torolve"<<endl;
+            FileSystemObjects.erase(i);
+            return 1;
+        }
+        else
+        {
+            ++i;
         }
     }
-
+    cout<<"Nem letezo mappa/file"<<endl;
+    return 0;
 }
 

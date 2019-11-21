@@ -12,7 +12,7 @@ filesystem::~filesystem()
 }
 int filesystem::mkdir(string n)
 {
-    for(auto i:currentdir->getItems()){
+    for(auto i:currentdir->getFileSystemObjects()){
             if(i->getname()==n){
                 cout<<"Ez a nev mar foglalt"<<endl;
                 return 0;
@@ -21,8 +21,9 @@ int filesystem::mkdir(string n)
     currentdir->makefolder(n);
     return 1;
 }
+
 int filesystem::touch(string filename){
-    for(auto i:currentdir->getItems()){
+    for(auto i:currentdir->getFileSystemObjects()){
         if(i->getname()==filename){
             cout<<"Ez a nev mar foglalt"<<endl;
             return 0;
@@ -45,19 +46,15 @@ void filesystem::ls(){
         cout<<"/";
     }
     cout<<endl;
-    for(auto i:currentdir->getItems()){
+    for(auto i:currentdir->getFileSystemObjects()){
         cout<<"   "<<i->getname();
         cout<<endl;
     }
 }
 
 int filesystem::cd(string to){
-    if(to==".."){
-        currentdir=currentdir->getparent();
-        return 1;
-    }
     int tmp=0;
-    for(auto& i:currentdir->getItems()){
+    for(auto& i:currentdir->getFileSystemObjects()){
         //i->print();
         if(i->getname()==to){
         tmp+=1;
@@ -106,7 +103,7 @@ int filesystem::absolutepathcd(string path){
         return 0;
     }
     for(unsigned int i=1;i<route.size();i++){
-        for(auto j:currentdir->getItems()){
+        for(auto j:currentdir->getFileSystemObjects()){
             directory* temp=dynamic_cast<directory*>(j);
             if(temp!=nullptr){
                 if(temp->getname()==route[i]){
@@ -179,7 +176,7 @@ int filesystem::util(vector<string> path){
         return 0;
     }
     for(unsigned int i=1;i<path.size()-1;i++){
-        for(auto j:currentdir->getItems()){
+        for(auto j:currentdir->getFileSystemObjects()){
             directory* temp=dynamic_cast<directory*>(j);
             if(temp!=nullptr){
                 if(temp->getname()==path[i]){
@@ -206,6 +203,7 @@ void filesystem::start(){
        command=argument1="";
        line>>command;
        line>>argument1;
+       line>>argument2;
 
            if (command=="ls")
            {
@@ -217,16 +215,13 @@ void filesystem::start(){
                else if(argument1.find("/")!=string::npos){
                    this->absolutepathcd(argument1);
                }
+               else if(argument1==".."){
+                   if(currentdir->getparent()!=nullptr) currentdir=currentdir->getparent();
+                   else cout<<"cd .. nem megengedett a rootbol"<<endl;
+               }
                else{
                    this->cd(argument1);
                }
-           }
-           else if(command=="cd.."){
-               if(currentdir==root){
-                   cout<<"Rootbol nem lehet cd..-zni"<<endl;
-               }
-               else
-                   currentdir=currentdir->getparent();
            }
            else if (command=="mkdir")
            {
@@ -241,24 +236,22 @@ void filesystem::start(){
                }
            }
            else if (command=="rm"){
-               if(argument1=="")
+                if(argument1=="")
                    cout<<"Adja meg a mappa nevet amit torolni akar"<<endl;
-               else if(argument1.find("/")!=string::npos){
-                   this->absolutepathrm(argument1);
-               }
-               else {
-                   currentdir->rm(argument1);
-               }
-           }
-           else if(command=="rm-rf"){
-               if(argument1=="")
-                   cout<<"Adja meg a mappa nevet amit torolni akar"<<endl;
-               else if(argument1.find("/")!=string::npos){
-                   this->absolutepathrmrf(argument1);
-               }
-               else {
-                   currentdir->rmrf(argument1);
-               }
+                else if(argument1.find("/")!=string::npos){
+                    this->absolutepathrm(argument1);
+                }
+                else if(argument1=="-rf"){
+                     if(argument2==""){
+                       cout<<"Adja meg a mappa nevet amit torolni akar"<<endl;
+                       }
+                     else {
+                          currentdir->rmrf(argument2);
+                     }
+                }
+                else {
+                      currentdir->rm(argument1);
+                }
            }
            else if(command=="touch"){
                if(argument1=="")
@@ -274,3 +267,4 @@ void filesystem::start(){
            else std::cout<<"Unknown command"<<std::endl;
     } while (command!="exit");
 }
+
