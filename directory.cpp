@@ -2,6 +2,7 @@
 #include <iomanip>
 
 
+
 directory::directory(string name, directory *parent):item(name,parent)
 {
 
@@ -24,7 +25,6 @@ directory *directory::getparent()
     directory* temp=dynamic_cast<directory*>(this->parent);
     return temp;
 }
-
 
 void directory::ls(){
     for(item* i:FileSystemObjects){
@@ -104,4 +104,3 @@ int directory::rmrf(string todelete)
     cout<<"Nem letezo mappa/file"<<endl;
     return 0;
 }
-

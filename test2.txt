@@ -1,0 +1,6 @@
+saveto.txt
+filesystem.txt
+mkdir mappa
+cd asd
+mkdir megegymappa
+exit

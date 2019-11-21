@@ -14,7 +14,6 @@ file::file(string name, item* parent, string content):item(name,parent)
     this->content=content;
 }
 
-
 void file::setContent(string content){
     this->content=content;
 }
@@ -22,3 +21,4 @@ void file::setContent(string content){
 
 file::~file(){
 }
+
