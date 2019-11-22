@@ -1,19 +1,17 @@
 #ifndef FILE_H
 #define FILE_H
-#include "ancestor.h"
+#include "item.h"
 
-class file:public ancestor
+class file:public item
 {
 private:
     string content;
 public:
-    file(string,ancestor*);
-    file(string,ancestor*,string);
+    file(string,item*);
+    file(string,item*,string);
     ~file() override;
     void setContent(string);
     string getContent() const;
-    string getname() override;
-    ancestor* getparent() override;
 };
 
 #endif // FILE_H

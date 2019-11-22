@@ -2,7 +2,8 @@
 #include <iomanip>
 
 
-directory::directory(string name, directory *parent):ancestor(name,parent)
+
+directory::directory(string name, directory *parent):item(name,parent)
 {
 
 }
@@ -14,7 +15,7 @@ directory::~directory()
     }
 }
 
-const list<ancestor *> &directory::getFileSystemObjects()
+const list<item *> &directory::getFileSystemObjects()
 {
     return FileSystemObjects;
 }
@@ -24,14 +25,9 @@ directory *directory::getparent()
     directory* temp=dynamic_cast<directory*>(this->parent);
     return temp;
 }
-  
-string directory::getname()
-{
-    return this->name;
-}
 
 void directory::ls(){
-    for(ancestor* i:FileSystemObjects){
+    for(item* i:FileSystemObjects){
         cout<<i->getname()<<endl;
     }
 }
@@ -58,7 +54,7 @@ void directory::echo(string content, string name){
 
 int directory::rm(string todelete)
 {
-    std::list<ancestor*>::iterator i = FileSystemObjects.begin();
+    std::list<item*>::iterator i = FileSystemObjects.begin();
     while (i != FileSystemObjects.end())
     {
         if((*i)->getname()==todelete){
@@ -92,7 +88,7 @@ int directory::rm(string todelete)
 
 int directory::rmrf(string todelete)
 {
-    std::list<ancestor*>::iterator i = FileSystemObjects.begin();
+    std::list<item*>::iterator i = FileSystemObjects.begin();
     while (i != FileSystemObjects.end())
     {
         if((*i)->getname()==todelete){

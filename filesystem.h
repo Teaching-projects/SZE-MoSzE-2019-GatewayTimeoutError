@@ -5,7 +5,7 @@
 #include <fstream>
 
 class filesystem
-{
+{  
 private:
     directory* root;
     directory* currentdir;
@@ -16,7 +16,12 @@ private:
     int echo(string,string);
     int mkdirwoerrormessage(string);
     int cdwoerrormessage(string);
+    int absolutepathcd(string);
+    int absolutepathrm(string);
+    int absolutepathrmrf(string);
+    int absolutepathmkdir(string);
     vector<string> split(const string&, const char&);
+    int util(vector<string>);
 public:
     filesystem();
     ~filesystem();

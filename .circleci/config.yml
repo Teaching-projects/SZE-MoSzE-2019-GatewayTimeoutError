@@ -26,7 +26,6 @@
         - run:
             name: output
             command: ./terminal < test.txt
-
     output2:
       machine:
         image: ubuntu-1604:201903-01

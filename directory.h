@@ -1,24 +1,23 @@
 #ifndef DIRECTORY_H
 #define DIRECTORY_H
-#include "ancestor.h"
+#include "item.h"
 #include "file.h"
 
-class directory : public ancestor
+class directory : public item
 {
 private:
-    list<ancestor*> FileSystemObjects;
+    list<item*> FileSystemObjects;
 public:
     directory(string name,directory*parent);
     ~directory() override;
-    string getname() override;
-    const list<ancestor *> &getFileSystemObjects();
-    directory* getparent() override;
+    directory* getparent();
     void ls();
     bool hasDirs();
     void makefolder(string);
+    void touch(string);
+    const list<item *> &getFileSystemObjects();
     int rm(string);
     int rmrf(string);
     void echo(string content, string name);
-    void touch(string);
 };
 #endif // DIRECTORY_H
