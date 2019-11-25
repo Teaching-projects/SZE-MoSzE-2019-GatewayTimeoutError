@@ -104,3 +104,8 @@ int directory::rmrf(string todelete)
     cout<<"Nem letezo mappa/file"<<endl;
     return 0;
 }
+
+void directory::mv(item *d)
+{
+    FileSystemObjects.push_back(d);
+}

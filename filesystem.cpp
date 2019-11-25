@@ -66,7 +66,8 @@ void filesystem::ls(){
     }
     cout<<endl;
     for(auto i:currentdir->getFileSystemObjects()){
-        cout<<"   "<<i->getname();
+        if(i->getparent()->getname()==currentdir->getname()){
+        cout<<"   "<<i->getname()<<" "<<i;
         file* temp=dynamic_cast<file*>(i);
         if(temp!=nullptr){
             if(!temp->getContent().empty()){
@@ -74,6 +75,7 @@ void filesystem::ls(){
             }
         }
         cout<<endl;
+    }
     }
 }
 
@@ -351,6 +353,95 @@ void filesystem::load(string fname){
         currentdir=root;
     }
 }
+
+int filesystem::move(string what, string to)
+{
+    item* temp;
+    directory* temp2=currentdir;
+    currentdir=root;
+    if(what.find("/")!=string::npos){
+        vector<string>route2=this->split(what,'/');
+        if(route2[0]!="root"){
+            cout<<"Nincs ilyen eleresi utvonal"<<endl;
+            return 0;
+        }
+        for(unsigned int i=1;i<route2.size()-1;i++){
+            for(auto j:currentdir->getFileSystemObjects()){
+                directory* temp=dynamic_cast<directory*>(j);
+                if(temp!=nullptr){
+                    if(temp->getname()==route2[i]){
+                        currentdir=temp;
+                    }
+                }
+                else{
+                    cout<<"Nincs ilyen eleresi utvonal"<<endl;
+                    return 0;
+                }
+            }
+        }
+        for(auto i:currentdir->getFileSystemObjects()){
+            if(i->getname()==route2.back()){
+                temp=i;
+                break;
+            }
+            else{
+                cout<<"Nincs ilyen file/mappa"<<endl;
+                return 0;
+            }
+        }
+
+    }
+    else{
+    for(auto i:currentdir->getFileSystemObjects()){
+        if(i->getname()==what){
+            temp=i;
+            break;
+        }
+        else{
+            cout<<"Nincs ilyen file/mappa"<<endl;
+            return 0;
+        }
+    }
+    }
+    currentdir=root;
+    vector<string>route=this->split(to,'/');
+    unsigned int flag=1;
+    if(route[0]!="root"){
+        cout<<"Nincs ilyen eleresi utvonal"<<endl;
+        return 0;
+    }
+    for(unsigned int i=1;i<route.size();i++){
+        for(auto j:currentdir->getFileSystemObjects()){
+            directory* temp=dynamic_cast<directory*>(j);
+            if(temp!=nullptr){
+                if(temp->getname()==route[i]){
+                    currentdir=temp;
+                    flag++;
+                }
+            }
+            else{
+                break;
+            }
+        }
+    }
+    if(flag==route.size()){
+        temp->setparent(currentdir);
+        currentdir->mv(temp);
+        currentdir=temp2;
+    }
+    else if(flag==route.size()-1){
+        string asd=route.back();
+        temp->setparent(currentdir);
+        temp->setName(asd);
+        currentdir->mv(temp);
+        currentdir=temp2;
+    }
+    else{
+        cout<<"Az eleresi utvonal ahova masolni szeretne nem letezik"<<endl;
+    }
+}
+
+
 void filesystem::start(){
     string save;
     string load;
@@ -452,6 +543,9 @@ void filesystem::start(){
                     cout<<"Unknown command"<<endl;
                 }
            }
+           }
+           else if(command=="move"){
+               this->move(argument1,argument2);
            }
            else if(command=="exit"){
                this->save(save);

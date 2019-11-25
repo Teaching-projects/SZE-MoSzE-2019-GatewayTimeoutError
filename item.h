@@ -16,6 +16,8 @@ public:
     virtual ~item()=0;
     string getname();
     item* getparent();
+    void setparent(item *p);
+    void setName(const string &value);
 };
 
 #endif // ANCESTOR_H
