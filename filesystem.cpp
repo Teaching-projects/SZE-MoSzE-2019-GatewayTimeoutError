@@ -67,7 +67,7 @@ void filesystem::ls(){
     cout<<endl;
     for(auto i:currentdir->getFileSystemObjects()){
         if(i->getparent()->getname()==currentdir->getname()){
-        cout<<"   "<<i->getname()<<" "<<i;
+        cout<<"   "<<i->getname();
         file* temp=dynamic_cast<file*>(i);
         if(temp!=nullptr){
             if(!temp->getContent().empty()){
@@ -371,11 +371,8 @@ int filesystem::move(string what, string to)
                 if(temp!=nullptr){
                     if(temp->getname()==route2[i]){
                         currentdir=temp;
+                        break;
                     }
-                }
-                else{
-                    cout<<"Nincs ilyen eleresi utvonal"<<endl;
-                    return 0;
                 }
             }
         }
@@ -383,10 +380,6 @@ int filesystem::move(string what, string to)
             if(i->getname()==route2.back()){
                 temp=i;
                 break;
-            }
-            else{
-                cout<<"Nincs ilyen file/mappa"<<endl;
-                return 0;
             }
         }
 
@@ -396,10 +389,6 @@ int filesystem::move(string what, string to)
         if(i->getname()==what){
             temp=i;
             break;
-        }
-        else{
-            cout<<"Nincs ilyen file/mappa"<<endl;
-            return 0;
         }
     }
     }
@@ -419,25 +408,33 @@ int filesystem::move(string what, string to)
                     flag++;
                 }
             }
-            else{
-                break;
-            }
         }
     }
     if(flag==route.size()){
+        if(!currentdir->contains(route.back())){
+            cout<<"Ilyen nevu mappa/file mar van abban a mappaban"<<endl;
+            return 0;
+        }
         temp->setparent(currentdir);
         currentdir->mv(temp);
         currentdir=temp2;
+        return 1;
     }
     else if(flag==route.size()-1){
         string asd=route.back();
+        if(!currentdir->contains(asd)){
+            cout<<"Ilyen nevu mappa/file mar van abban a mappaban"<<endl;
+            return 0;
+        }
         temp->setparent(currentdir);
         temp->setName(asd);
         currentdir->mv(temp);
         currentdir=temp2;
+        return 1;
     }
     else{
         cout<<"Az eleresi utvonal ahova masolni szeretne nem letezik"<<endl;
+        return 0;
     }
 }
 

@@ -109,3 +109,13 @@ void directory::mv(item *d)
 {
     FileSystemObjects.push_back(d);
 }
+
+bool directory::contains(string tofind)
+{
+    for(auto i:FileSystemObjects){
+        if(i->getname()==tofind){
+            return true;
+        }
+    }
+    return false;
+}
