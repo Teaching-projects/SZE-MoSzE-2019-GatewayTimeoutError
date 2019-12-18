@@ -5,7 +5,13 @@
         image: ubuntu-1604:201903-01
       steps:
         - checkout 
-        - run: 'make'
+        - run:
+            name: 'requirements'
+            command: |
+            sudo apt-get -y -q update
+            sudo apt-get install graphviz
+            sudo apt-get install doxygen
+            make
         - persist_to_workspace:
             root: ~/project
             paths:
@@ -48,6 +54,20 @@
         - run:
             name: Diff
             command: ./terminal < test.txt > output diff output testresult.txt
+
+    doxygen:
+      machine:
+        image: ubuntu-1604:201903-01
+      steps:
+        - attach_workspace:
+            at: ~/project
+        - run:
+            name: 'Doxygen'
+            command: |
+              doxygen -g Doxyfile;
+              doxygen Doxyfile;
+        - store_artifacts:
+            path: ./html
             
   workflows:
     version: 2
@@ -64,3 +84,7 @@
            requires:
              - output
              - build
+        - doxygen:
+           requires:
+             - build
+
