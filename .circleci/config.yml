@@ -59,8 +59,6 @@
       machine:
         image: ubuntu-1604:201903-01
       steps:
-        - attach_workspace:
-            at: ~/project
         - run:
             name: 'Doxygen'
             command: |
