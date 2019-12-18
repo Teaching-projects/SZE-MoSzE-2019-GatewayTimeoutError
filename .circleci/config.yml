@@ -12,6 +12,13 @@
               sudo apt-get install graphviz
               sudo apt-get install doxygen
               make
+        - run:
+            name: 'Doxygen'
+            command: |
+              doxygen -g Doxyfile;
+              doxygen Doxyfile;
+        - store_artifacts:
+            path: ./html
         - persist_to_workspace:
             root: ~/project
             paths:
@@ -22,7 +29,7 @@
               - saveto.txt
               - expected.txt
               - filesystem.txt
-              
+
     output:
       machine:
         image: ubuntu-1604:201903-01
@@ -32,6 +39,7 @@
         - run:
             name: output
             command: ./terminal < test.txt
+
     output2:
       machine:
         image: ubuntu-1604:201903-01
@@ -55,18 +63,6 @@
             name: Diff
             command: ./terminal < test.txt > output diff output testresult.txt
 
-    doxygen:
-      machine:
-        image: ubuntu-1604:201903-01
-      steps:
-        - run:
-            name: 'Doxygen'
-            command: |
-              doxygen -g Doxyfile;
-              doxygen Doxyfile;
-        - store_artifacts:
-            path: ./html
-            
   workflows:
     version: 2
     build_print_diff:
@@ -81,8 +77,5 @@
         - diff:
            requires:
              - output
-             - build
-        - doxygen:
-           requires:
              - build
 
