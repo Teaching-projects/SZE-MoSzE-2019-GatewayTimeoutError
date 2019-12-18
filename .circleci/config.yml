@@ -8,10 +8,10 @@
         - run:
             name: 'requirements'
             command: |
-            sudo apt-get -y -q update
-            sudo apt-get install graphviz
-            sudo apt-get install doxygen
-            make
+              sudo apt-get -y -q update
+              sudo apt-get install graphviz
+              sudo apt-get install doxygen
+              make
         - persist_to_workspace:
             root: ~/project
             paths:
