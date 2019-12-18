@@ -18,6 +18,9 @@ public:
     const list<item *> &getFileSystemObjects();
     int rm(string);
     int rmrf(string);
+    void torol(item*);
     void echo(string content, string name);
+    void mv(item *d);
+    bool contains(string);
 };
 #endif // DIRECTORY_H

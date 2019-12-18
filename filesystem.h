@@ -22,6 +22,7 @@ private:
     int absolutepathmkdir(string);
     vector<string> split(const string&, const char&);
     int util(vector<string>);
+    int move(string what, string to);
 public:
     filesystem();
     ~filesystem();
