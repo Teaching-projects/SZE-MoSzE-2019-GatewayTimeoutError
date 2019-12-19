@@ -26,15 +26,15 @@
               - expected.txt
               - filesystem.txt
     doxygen:
-        machine:
-          image:
-        steps:
-          - run:
+      machine:
+        image: ubuntu-1604:201903-01
+      steps:
+        - run:
             name: 'Doxygen'
             command: |
               doxygen Doxyfile
               cd ./latex && make
-          - store_artifacts:
+        - store_artifacts:
             path: ./latex/refman.pdf
 
     output:
