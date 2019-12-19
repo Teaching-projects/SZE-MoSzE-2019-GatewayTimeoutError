@@ -5,13 +5,6 @@
         image: ubuntu-1604:201903-01
       steps:
         - checkout 
-        - run:
-            name: 'requirements'
-            command: |
-              sudo apt-get -y -q update
-              sudo apt-get install graphviz
-              sudo apt-get install doxygen
-              sudo apt-get install texlive-latex-extra
         - run: 
             name: 'Make'
             command: make
@@ -25,12 +18,21 @@
               - saveto.txt
               - expected.txt
               - filesystem.txt
+
     doxygen:
       machine:
         image: ubuntu-1604:201903-01
       steps:
+        - checkout
         - run:
-            name: 'Doxygen'
+            name: Doxygen setup
+            command: |
+              sudo apt-get -y -q update
+              sudo apt-get install graphviz
+              sudo apt-get install doxygen
+              sudo apt-get install texlive-latex-extra
+        - run:
+            name: Doxygen
             command: |
               doxygen Doxyfile
               cd ./latex && make
@@ -75,9 +77,7 @@
     build_print_diff:
       jobs:
         - build
-        - doxygen:
-           requires:
-            - build
+        - doxygen
         - output:
            requires:
             - build
