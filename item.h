@@ -8,7 +8,7 @@
 using namespace std;
 
 /*!
-  Absztrakt ososztály a directory es file osztalynak
+  Absztrakt ososztaly a directory es file osztalynak
 */
 class item{
 protected:

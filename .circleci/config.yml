@@ -11,14 +11,17 @@
               sudo apt-get -y -q update
               sudo apt-get install graphviz
               sudo apt-get install doxygen
-              make
+              sudo apt-get install texlive-latex-extra
+        - run: 
+            name: 'Make'
+            command: make
         - run:
             name: 'Doxygen'
             command: |
-              doxygen -g Doxyfile;
-              doxygen Doxyfile;
+              doxygen Doxyfile
+              cd ./latex && make
         - store_artifacts:
-            path: ./html
+            path: ./latex/refman.pdf
         - persist_to_workspace:
             root: ~/project
             paths:
