@@ -9,27 +9,17 @@
             name: Requirements
             command: |
               sudo apt-get -y -q update
-              sudo apt-get install graphviz
-              sudo apt-get install doxygen
-              sudo apt-get install texlive-latex-extra
               sudo apt-get install cppcheck
               sudo apt-get install valgrind
         - run:
             name: Cppcheck
-            command: cppcheck --language=c++ --enable=performance *.cpp *.h
+            command: cppcheck --language=c++ --enable=performance --error-exitcode=7 *.cpp *.h
         - run:
             name: Make
             command: make
         - run:
             name: Valgrind
             command: valgrind --leak-check=full ./terminal < test.txt
-        - run:
-            name: 'Doxygen'
-            command: |
-              doxygen Doxyfile
-              cd ./latex && make
-        - store_artifacts:
-            path: ./latex/refman.pdf
         - persist_to_workspace:
             root: ~/project
             paths:
@@ -40,6 +30,26 @@
               - saveto.txt
               - expected.txt
               - filesystem.txt
+
+    doxygen:
+      machine:
+        image: ubuntu-1604:201903-01
+      steps:
+        - checkout
+        - run:
+            name: Doxygen setup
+            command: |
+              sudo apt-get -y -q update
+              sudo apt-get install graphviz
+              sudo apt-get install doxygen
+              sudo apt-get install texlive-latex-extra
+        - run:
+            name: Doxygen
+            command: |
+              doxygen Doxyfile
+              cd ./latex && make
+        - store_artifacts:
+            path: ./latex/refman.pdf
 
     output:
       machine:
@@ -79,6 +89,7 @@
     build_print_diff:
       jobs:
         - build
+        - doxygen
         - output:
            requires:
             - build

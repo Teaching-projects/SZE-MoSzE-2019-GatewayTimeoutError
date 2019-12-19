@@ -1,10 +1,7 @@
 #include "item.h"
 
-item::item(string name, item* parent)
-{
-    this->name=name;
-    this->parent=parent;
-}
+item::item(string name, item* parent): name(name), parent(parent){}
+
 
 string item::getname()
 {
