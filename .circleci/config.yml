@@ -75,7 +75,9 @@
     build_print_diff:
       jobs:
         - build
-        - doxygen
+        - doxygen:
+           requires:
+            - build
         - output:
            requires:
             - build
