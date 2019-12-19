@@ -12,8 +12,8 @@
               sudo apt-get install graphviz
               sudo apt-get install doxygen
               sudo apt-get install texlive-latex-extra
-          sudo apt-get install cppcheck
-          sudo apt-get install valgrind
+              sudo apt-get install cppcheck
+              sudo apt-get install valgrind
         - run:
             name: Cppcheck
             command: cppcheck --language=c++ --enable=performance *.cpp *.h
