@@ -34,7 +34,7 @@
             command: |
               doxygen Doxyfile
               cd ./latex && make
-        - store_artifacts:
+          - store_artifacts:
             path: ./latex/refman.pdf
 
     output:
