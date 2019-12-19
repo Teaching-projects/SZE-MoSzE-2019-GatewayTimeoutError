@@ -15,13 +15,6 @@
         - run: 
             name: 'Make'
             command: make
-        - run:
-            name: 'Doxygen'
-            command: |
-              doxygen Doxyfile
-              cd ./latex && make
-        - store_artifacts:
-            path: ./latex/refman.pdf
         - persist_to_workspace:
             root: ~/project
             paths:
@@ -32,6 +25,17 @@
               - saveto.txt
               - expected.txt
               - filesystem.txt
+    doxygen:
+        machine:
+          image:
+        steps:
+          - run:
+            name: 'Doxygen'
+            command: |
+              doxygen Doxyfile
+              cd ./latex && make
+        - store_artifacts:
+            path: ./latex/refman.pdf
 
     output:
       machine:
@@ -71,6 +75,7 @@
     build_print_diff:
       jobs:
         - build
+        - doxygen
         - output:
            requires:
             - build
