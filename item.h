@@ -1,5 +1,5 @@
-#ifndef ANCESTOR_H
-#define ANCESTOR_H
+#ifndef ITEM_H
+#define ITEM_H
 #include <string>
 #include <iostream>
 #include <list>
@@ -7,6 +7,9 @@
 #include <stdlib.h>
 using namespace std;
 
+/*!
+  Absztrakt ososztaly a directory es file osztalynak
+*/
 class item{
 protected:
     string name;
@@ -14,8 +17,14 @@ protected:
 public:
     item(string,item*);
     virtual ~item()=0;
+/*!
+	\return File/Directory nevet adja vissza.
+*/
     string getname();
+/*!
+	\return File/Directory oset adja vissza.
+*/
     item* getparent();
 };
 
-#endif // ANCESTOR_H
+#endif // ITEM_H
