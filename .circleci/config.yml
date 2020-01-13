@@ -14,8 +14,6 @@
         - run:
             name: Valgrind
             command: valgrind --leak-check=full ./terminal < test.txt
-        - persist_to_workspace:
-            root: ~/project
 
     doxygen:
       docker:
